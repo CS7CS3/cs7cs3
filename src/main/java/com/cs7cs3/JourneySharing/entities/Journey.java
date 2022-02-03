@@ -6,11 +6,12 @@ import java.util.List;
 import com.cs7cs3.JourneySharing.entities.base.JourneyId;
 import com.cs7cs3.JourneySharing.entities.base.Timestamp;
 import com.cs7cs3.JourneySharing.entities.base.UserId;
+import com.cs7cs3.JourneySharing.entities.base.validator.Validatable;
 
 import lombok.Data;
 
 @Data
-public class Journey {
+public class Journey extends Validatable {
   public JourneyId journeyId = new JourneyId();
   public Timestamp createdTime = new Timestamp();
   public Timestamp endTime = new Timestamp();
@@ -67,6 +68,11 @@ public class Journey {
       userId.value = string;
       guestIds.add(userId);
     }
+  }
+
+  // @Override
+  public boolean isEmpty() {
+    return true;
   }
 
 }

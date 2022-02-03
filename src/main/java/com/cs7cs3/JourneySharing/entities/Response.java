@@ -2,10 +2,15 @@ package com.cs7cs3.JourneySharing.entities;
 
 import java.util.Optional;
 
+import com.cs7cs3.JourneySharing.entities.base.validator.Validatable;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 import lombok.Data;
 
 @Data
-public class Response<T> {
+@JsonInclude(Include.NON_EMPTY)
+public class Response<T> extends Validatable{
   public static <U> Response<U> makeResponse(U u) {
     Response<U> resp = new Response<U>(true, "", u);
     return resp;
