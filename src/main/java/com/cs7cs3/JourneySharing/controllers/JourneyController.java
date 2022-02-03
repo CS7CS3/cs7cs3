@@ -2,6 +2,7 @@ package com.cs7cs3.JourneySharing.controllers;
 
 import java.util.Optional;
 
+import com.cs7cs3.JourneySharing.db.JourneyRepository;
 import com.cs7cs3.JourneySharing.entities.Journey;
 import com.cs7cs3.JourneySharing.entities.Request;
 import com.cs7cs3.JourneySharing.entities.Response;
@@ -9,6 +10,7 @@ import com.cs7cs3.JourneySharing.entities.base.Empty;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -21,34 +23,44 @@ import org.springframework.web.bind.annotation.RestController;
 public class JourneyController {
 
   private Logger logger = LoggerFactory.getLogger(this.getClass());
-  // private final JourneyRepository repository;
 
-  // JourneyController(JourneyRepository repository) {
-  // // this.repository = repository;
-  // }
+  @Autowired
+  private JourneyRepository repository;
 
   @GetMapping("/{value}")
-  public Response<Journey> get(@RequestBody Request<Empty> req) {
-    // var res = repository.findById(id);
-    // if (!res.isPresent()) {
-    // return Response.makeResponse(false, "id does not exist", Optional.empty());
-    // }
-    // return Response.makeResponse(res.get());
+  public Response<Journey> get(@RequestBody Request<Empty> req, String id) {
     logger.info(req.toString());
-    return Response.makeResponse(null);
+    if (!req.validate()) {
+      logger.error("?");
+      return Response.makeResponse(false, "?", "", Optional.empty());
+    }
+
+    if (/* var token = req.get().token; validate(token) */ false) {
+      logger.error("?");
+      return Response.makeResponse(false, "?", "", Optional.empty());
+    }
+
+    var res = repository.findById(id);
+    if (!res.isPresent()) {
+      return Response.makeResponse(false, "id does not exist", /* next_token(token) */ "", Optional.empty());
+    }
+    return Response.makeResponse(/* next_token(token) */ "", res.get());
   }
 
   @PostMapping
   public Response<Empty> post(@RequestBody Request<Journey> req) {
-    // repository.save(journey);
     logger.info(req.toString());
-    return Response.makeResponse(true, "", Optional.empty());
+
+    repository.save(req.payload.get());
+    return Response.makeResponse(true, "", /* next_token(token) */ "", Optional.empty());
   }
 
   @PutMapping
   public Response<Empty> put(@RequestBody Request<Journey> req) {
     logger.info(req.toString());
-    return Response.makeResponse(null);
+
+    repository.save(req.payload.get());
+    return Response.makeResponse(true, "", /* next_token(token) */ "", Optional.empty());
   }
 
 }

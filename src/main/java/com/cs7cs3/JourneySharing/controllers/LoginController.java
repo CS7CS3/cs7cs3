@@ -1,7 +1,6 @@
 package com.cs7cs3.JourneySharing.controllers;
 
 import com.cs7cs3.JourneySharing.entities.Journey;
-import com.cs7cs3.JourneySharing.entities.base.UserId;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +16,7 @@ public class LoginController {
   @ResponseBody
   public Journey GetHandler() {
     Journey j = new Journey();
-    j.guestIds.add(new UserId());
+    // j.guestIds.add("");
     return j;
   }
 
