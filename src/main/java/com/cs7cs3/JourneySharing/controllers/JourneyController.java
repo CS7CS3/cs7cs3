@@ -105,4 +105,5 @@ public class JourneyController {
     return Response.makeResponse(true, "", /* next_token(token) */ "", Optional.empty());
   }
 
+
 }
