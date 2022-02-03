@@ -35,7 +35,7 @@ public class JourneyController {
       return Response.makeResponse(false, "?", "", Optional.empty());
     }
 
-    if (/* var token = req.get().token; validate(token) */ false) {
+    if (/* var token = req.token; validate(token) */ false) {
       logger.error("?");
       return Response.makeResponse(false, "?", "", Optional.empty());
     }
@@ -50,6 +50,27 @@ public class JourneyController {
   @PostMapping
   public Response<Empty> post(@RequestBody Request<Journey> req) {
     logger.info(req.toString());
+    if (!req.validate()) {
+      logger.error("?");
+      return Response.makeResponse(false, "?", "", Optional.empty());
+    }
+
+    // empty payload, early reject
+    if (!req.payload.isPresent()) {
+      logger.error("?");
+      return Response.makeResponse(false, "?", "", Optional.empty());
+    }
+
+    if (/* var token = req.token; validate(token) */ false) {
+      logger.error("?");
+      return Response.makeResponse(false, "?", "", Optional.empty());
+    }
+
+    // schema validation
+    if (!req.payload.get().validate()) {
+      logger.error("?");
+      return Response.makeResponse(false, "?", "", Optional.empty());
+    }
 
     repository.save(req.payload.get());
     return Response.makeResponse(true, "", /* next_token(token) */ "", Optional.empty());
@@ -58,6 +79,27 @@ public class JourneyController {
   @PutMapping
   public Response<Empty> put(@RequestBody Request<Journey> req) {
     logger.info(req.toString());
+    if (!req.validate()) {
+      logger.error("?");
+      return Response.makeResponse(false, "?", "", Optional.empty());
+    }
+
+    // empty payload, early reject
+    if (!req.payload.isPresent()) {
+      logger.error("?");
+      return Response.makeResponse(false, "?", "", Optional.empty());
+    }
+
+    if (/* var token = req.token; validate(token) */ false) {
+      logger.error("?");
+      return Response.makeResponse(false, "?", "", Optional.empty());
+    }
+
+    // schema validation
+    if (!req.payload.get().validate()) {
+      logger.error("?");
+      return Response.makeResponse(false, "?", "", Optional.empty());
+    }
 
     repository.save(req.payload.get());
     return Response.makeResponse(true, "", /* next_token(token) */ "", Optional.empty());
