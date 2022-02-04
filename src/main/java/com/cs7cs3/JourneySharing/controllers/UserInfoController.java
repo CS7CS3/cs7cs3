@@ -1,31 +1,104 @@
 package com.cs7cs3.JourneySharing.controllers;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.cs7cs3.JourneySharing.db.UserInfoRepository;
+import com.cs7cs3.JourneySharing.entities.Journey;
+import com.cs7cs3.JourneySharing.entities.Request;
+import com.cs7cs3.JourneySharing.entities.Response;
+import com.cs7cs3.JourneySharing.entities.UserInfo;
+import com.cs7cs3.JourneySharing.entities.base.Empty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/user_info")
 public class UserInfoController {
+  private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-  @GetMapping
-  public String get() {
+  @Autowired
+  private UserInfoRepository repository;
 
-    return "";
+  @GetMapping("/{id}")
+  public Response<UserInfo> get( Request<Empty> req, @PathVariable("id") String id) {
+    logger.info(req.toString());
+    if (!req.validate()) {
+      logger.error("?");
+      return Response.makeResponse(false, "?", "", Optional.empty());
+    }
+
+    if (/* var token = req.token; validate(token) */ false) {
+      logger.error("?");
+      return Response.makeResponse(false, "?", "", Optional.empty());
+    }
+
+    var res = repository.findById(id);
+    if (!res.isPresent()) {
+      return Response.makeResponse(false, "id does not exist", /* next_token(token) */ "", Optional.empty());
+    }
+
+    return Response.makeResponse(/* next_token(token) */ "", res.get());
   }
 
   @PostMapping
-  public String post() {
+  public Response<Empty> post(@RequestBody Request<UserInfo> req) {
+    logger.info(req.toString());
+    if (!req.validate()) {
+      logger.error("?");
+      return Response.makeResponse(false, "?", "", Optional.empty());
+    }
 
-    return "";
+    // empty payload, early reject
+    if (!req.payload.isPresent()) {
+      logger.error("?");
+      return Response.makeResponse(false, "?", "", Optional.empty());
+    }
+
+    if (/* var token = req.token; validate(token) */ false) {
+      logger.error("?");
+      return Response.makeResponse(false, "?", "", Optional.empty());
+    }
+
+    // schema validation
+    if (!req.payload.get().validate()) {
+      logger.error("?");
+      return Response.makeResponse(false, "?", "", Optional.empty());
+    }
+
+    repository.save(req.payload.get());
+    return Response.makeResponse(true, "", /* next_token(token) */ "", Optional.empty());
   }
 
   @PutMapping
-  public String put() {
+  public Response<Empty> put(@RequestBody Request<UserInfo> req) {
+    logger.info(req.toString());
+    if (!req.validate()) {
+      logger.error("?");
+      return Response.makeResponse(false, "?", "", Optional.empty());
+    }
 
-    return "";
+    // empty payload, early reject
+    if (!req.payload.isPresent()) {
+      logger.error("?");
+      return Response.makeResponse(false, "?", "", Optional.empty());
+    }
+
+    if (/* var token = req.token; validate(token) */ false) {
+      logger.error("?");
+      return Response.makeResponse(false, "?", "", Optional.empty());
+    }
+
+    // schema validation
+    if (!req.payload.get().validate()) {
+      logger.error("?");
+      return Response.makeResponse(false, "?", "", Optional.empty());
+    }
+
+    repository.save(req.payload.get());
+    return Response.makeResponse(true, "", /* next_token(token) */ "", Optional.empty());
   }
+
 
 }
