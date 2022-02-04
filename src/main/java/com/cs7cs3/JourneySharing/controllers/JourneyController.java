@@ -11,12 +11,7 @@ import com.cs7cs3.JourneySharing.entities.base.Empty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/journey")
@@ -27,9 +22,12 @@ public class JourneyController {
   @Autowired
   private JourneyRepository repository;
 
-  @GetMapping("/{value}")
-  public Response<Journey> get(@RequestBody Request<Empty> req, String id) {
+  @GetMapping("/{id}")
+  public Response<Journey> get( Request<Empty> req, @PathVariable("id") String id) {
+
+    System.out.println("in get");
     logger.info(req.toString());
+
     if (!req.validate()) {
       logger.error("?");
       return Response.makeResponse(false, "?", "", Optional.empty());
@@ -44,11 +42,14 @@ public class JourneyController {
     if (!res.isPresent()) {
       return Response.makeResponse(false, "id does not exist", /* next_token(token) */ "", Optional.empty());
     }
+
     return Response.makeResponse(/* next_token(token) */ "", res.get());
   }
 
+//  @PostMapping("/post")
   @PostMapping
   public Response<Empty> post(@RequestBody Request<Journey> req) {
+    System.out.println("in post");
     logger.info(req.toString());
     if (!req.validate()) {
       logger.error("?");
