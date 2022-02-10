@@ -4,9 +4,9 @@ import java.util.Optional;
 
 import com.cs7cs3.JourneySharing.db.AccountRepository;
 import com.cs7cs3.JourneySharing.entities.Account;
-import com.cs7cs3.JourneySharing.entities.RegisterRequest;
 import com.cs7cs3.JourneySharing.entities.Response;
 import com.cs7cs3.JourneySharing.entities.base.Empty;
+import com.cs7cs3.JourneySharing.entities.request.RegisterRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

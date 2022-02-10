@@ -1,18 +1,23 @@
 package com.cs7cs3.JourneySharing.controllers;
 
-import com.cs7cs3.JourneySharing.db.JourneyRepository;
+import java.util.Optional;
+
 import com.cs7cs3.JourneySharing.db.ReviewRepository;
-import com.cs7cs3.JourneySharing.entities.Journey;
-import com.cs7cs3.JourneySharing.entities.Request;
 import com.cs7cs3.JourneySharing.entities.Response;
 import com.cs7cs3.JourneySharing.entities.UserReview;
 import com.cs7cs3.JourneySharing.entities.base.Empty;
+import com.cs7cs3.JourneySharing.entities.request.Request;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/review")

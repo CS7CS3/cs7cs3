@@ -3,9 +3,9 @@ package com.cs7cs3.JourneySharing.controllers;
 import java.util.Optional;
 
 import com.cs7cs3.JourneySharing.db.AccountRepository;
-import com.cs7cs3.JourneySharing.entities.LoginRequest;
 import com.cs7cs3.JourneySharing.entities.Response;
 import com.cs7cs3.JourneySharing.entities.base.Empty;
+import com.cs7cs3.JourneySharing.entities.request.LoginRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
