@@ -3,7 +3,8 @@ package com.cs7cs3.JourneySharing.controllers;
 import java.util.Optional;
 
 import com.cs7cs3.JourneySharing.db.AccountRepository;
-import com.cs7cs3.JourneySharing.entities.LoginRequest;
+import com.cs7cs3.JourneySharing.entities.Account;
+import com.cs7cs3.JourneySharing.entities.RegisterRequest;
 import com.cs7cs3.JourneySharing.entities.Response;
 import com.cs7cs3.JourneySharing.entities.base.Empty;
 
@@ -17,8 +18,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/login")
-public class LoginController {
+@RequestMapping("/register")
+public class RegisterController {
 
   @Autowired
   private AccountRepository repository;
@@ -26,7 +27,7 @@ public class LoginController {
 
   @PostMapping
   @ResponseBody
-  public Response<Empty> PostHandler(@RequestBody LoginRequest req) {
+  public Response<Empty> PostHandler(@RequestBody RegisterRequest req) {
     logger.info(req.toString());
     if (!req.validate()) {
       logger.error("?");
@@ -34,15 +35,16 @@ public class LoginController {
     }
 
     var res = repository.findById(req.userId);
-    if (!res.isPresent()) {
+    if (res.isPresent()) {
       logger.error("?");
       return Response.makeResponse(false, "id does not exist", "", Optional.empty());
     }
 
-    if (!res.get().password.equals(req.password)) {
-      logger.error("?");
-      return Response.makeResponse(false, "?", "", Optional.empty());
-    }
+    var account = new Account();
+    account.uerId = req.userId;
+    account.password = req.password;
+
+    repository.save(account);
 
     return Response.makeResponse("token");
   }
