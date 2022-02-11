@@ -11,6 +11,11 @@ import lombok.Data;
 @Data
 @JsonInclude(Include.NON_EMPTY)
 public class Response<T> extends Validatable {
+  public static <U> Response<U> makeResponse(String token) {
+    Response<U> resp = new Response<U>(true, "", token, Optional.empty());
+    return resp;
+  }
+
   public static <U> Response<U> makeResponse(String token, U u) {
     Response<U> resp = new Response<U>(true, "", token, u);
     return resp;

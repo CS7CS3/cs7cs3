@@ -1,4 +1,4 @@
-package com.cs7cs3.JourneySharing.entities;
+package com.cs7cs3.JourneySharing.entities.request;
 
 import java.util.Optional;
 
