@@ -1,5 +1,11 @@
 # Journey Sharing
 
+## Run
+
+``` bash
+./run.sh
+```
+
 ## TODO
 
 - [ ] journey end (how?)
