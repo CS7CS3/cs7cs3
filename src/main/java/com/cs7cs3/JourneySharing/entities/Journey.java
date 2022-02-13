@@ -24,8 +24,6 @@ public class Journey extends Validatable {
   static public Journey make(@NonNull String userId, @NonNull Location from, @NonNull Location to) {
     var journey = new Journey();
 
-    journey.hostId = userId;
-
     journey.journeyId = UUID.randomUUID().toString();
     journey.createdTime = System.currentTimeMillis() / 1000;
     journey.endTime = -1; // magic number
@@ -41,6 +39,8 @@ public class Journey extends Validatable {
   public long createdTime = 0;
   public long endTime = 0;
 
+  public int maxMember = Integer.MAX_VALUE;
+
   @Embedded
   @AttributeOverrides({
       @AttributeOverride(name = "latitude", column = @Column(name = "from_latitude")),
@@ -55,9 +55,7 @@ public class Journey extends Validatable {
   })
   public Location to = new Location();
 
-  public String hostId = "";
-
   @ElementCollection
-  public List<String> guestIds = new ArrayList<String>();
+  public List<String> members = new ArrayList<String>();
 
 }

@@ -11,21 +11,21 @@ import com.cs7cs3.JourneySharing.entities.Location;
 import com.cs7cs3.JourneySharing.entities.Response;
 import com.cs7cs3.JourneySharing.entities.base.Empty;
 import com.cs7cs3.JourneySharing.entities.request.CreateJourneyRequest;
+import com.cs7cs3.JourneySharing.entities.request.ExitJourneyRequest;
+import com.cs7cs3.JourneySharing.entities.request.JoinJourneyRequest;
 import com.cs7cs3.JourneySharing.entities.request.Request;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 
 @RestController
 @RequestMapping("/journey")
@@ -37,7 +37,6 @@ public class JourneyController {
   private JourneyRepository repository;
 
   @GetMapping("/{id}")
-
   public Response<Journey> getById(@PathVariable("id") String id, @RequestParam("token") String token) {
     if (/* var token = req.token; validate(token) */ false) {
       logger.error("?");
@@ -91,7 +90,41 @@ public class JourneyController {
   }
 
   @PostMapping("/create")
-  public Response<Journey> post(@RequestBody Request<CreateJourneyRequest> req) {
+  public Response<Journey> createJourney(@RequestBody Request<CreateJourneyRequest> req) {
+    logger.info(req.toString());
+    if (!req.validate()) {
+      logger.error("?");
+      return Response.makeResponse(false, "?", "", Optional.empty());
+    }
+
+    // empty payload, early reject
+    if (!req.payload.isPresent()) {
+      logger.error("?");
+      return Response.makeResponse(false, "?", "", Optional.empty());
+    }
+
+    if (/* var token = req.token; validate(token) */ false) {
+      logger.error("?");
+      return Response.makeResponse(false, "?", "", Optional.empty()); 
+    }
+
+    // schema validation
+    if (!req.payload.get().validate()) {
+      logger.error("?");
+      return Response.makeResponse(false, "?", "", Optional.empty());
+    }
+
+    var payload = req.payload.get();
+    var journey = Journey.make(payload.userId, payload.from, payload.to);
+
+    repository.save(journey);
+
+    return Response.makeResponse(true, "", /* next_token(token) */ "", journey);
+  }
+
+  @PostMapping("/join")
+  @Transactional
+  public Response<Empty> updateJourneyStatus(@RequestBody Request<JoinJourneyRequest> req) {
     logger.info(req.toString());
     if (!req.validate()) {
       logger.error("?");
@@ -116,15 +149,22 @@ public class JourneyController {
     }
 
     var payload = req.payload.get();
-    var journey = Journey.make(payload.userId, payload.from, payload.to);
+    var journey = repository.findById(payload.journeyId);
+    if (!journey.isPresent()) {
+      logger.error("?");
+      return Response.makeResponse(false, "?", "", Optional.empty());
+    }
 
-    repository.save(journey);
+    journey.get().members.add(payload.userId);
+    repository.save(journey.get());
+    // repository.
 
-    return Response.makeResponse(true, "", /* next_token(token) */ "", journey);
+    return Response.makeResponse("token");
   }
 
-  @PutMapping
-  public Response<Empty> put(@RequestBody Request<Journey> req) {
+  @PostMapping("/exit")
+  @Transactional
+  public Response<Empty> exitJourneyStatus(@RequestBody Request<ExitJourneyRequest> req) {
     logger.info(req.toString());
     if (!req.validate()) {
       logger.error("?");
@@ -148,8 +188,20 @@ public class JourneyController {
       return Response.makeResponse(false, "?", "", Optional.empty());
     }
 
-    repository.save(req.payload.get());
-    return Response.makeResponse(true, "", /* next_token(token) */ "", Optional.empty());
+    var payload = req.payload.get();
+    var journey = repository.findById(payload.journeyId);
+    if (!journey.isPresent()) {
+      logger.error("?");
+      return Response.makeResponse(false, "?", "", Optional.empty());
+    }
+
+    if (!journey.get().members.remove(payload.userId)) {
+      logger.error("?");
+      return Response.makeResponse(false, "?", "", Optional.empty());
+    }
+    repository.save(journey.get());
+
+    return Response.makeResponse("token");
   }
 
 }
