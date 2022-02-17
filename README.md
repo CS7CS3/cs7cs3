@@ -1,5 +1,9 @@
 # Journey Sharing
 
+## API
+
+visit https://documenter.getpostman.com/view/5965087/UVkiTeEB
+
 ## Run
 
 ``` bash
