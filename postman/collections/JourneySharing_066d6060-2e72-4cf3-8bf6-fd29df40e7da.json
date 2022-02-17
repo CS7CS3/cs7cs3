@@ -1,0 +1,655 @@
+{
+    "info": {
+        "_postman_id": "e7fa7232-80d3-42e0-a7b9-1e5729f0ae4f",
+        "name": "JourneySharing",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "/login",
+            "id": "ee1afd96-9ff9-4bbe-a197-9e5939418f0c",
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"userId\": \"mKFBDNVq_1g7orBw\",\n  \"password\": \"buEI@kSaLc9a5HvPFMp?o#lVwD1ZU\",\n  \"timestamp\": 46674528\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/login",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "login"
+                    ]
+                }
+            },
+            "response": [
+                {
+                    "id": "a0c3a546-b45d-4e7e-bd40-ddc8cd434243",
+                    "name": "response",
+                    "originalRequest": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "description": "Added as a part of security scheme: basic",
+                                "key": "Authorization",
+                                "value": "Basic <credentials>"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"userId\": \"mKFBDNVq_1g7orBw\",\n  \"password\": \"buEI@kSaLc9a5HvPFMp?o#lVwD1ZU\",\n  \"timestamp\": 46674528\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/login",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "login"
+                            ]
+                        }
+                    },
+                    "status": "OK",
+                    "code": 200,
+                    "_postman_previewlanguage": "json",
+                    "header": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ],
+                    "cookie": [],
+                    "responseTime": null,
+                    "body": "{\n  \"success\": false,\n  \"reason\": \"ut in\",\n  \"token\": \"C9VmixzkUi1irqMm\"\n}"
+                }
+            ]
+        },
+        {
+            "name": "/register",
+            "id": "102dce32-4fed-47c4-b44f-3e3fc93afc92",
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"userId\": \"mKFBDNVq_1g7orBw\",\n  \"password\": \"buEI@kSaLc9a5HvPFMp?o#lVwD1ZU\",\n  \"timestamp\": 46674528\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/register",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "register"
+                    ]
+                }
+            },
+            "response": [
+                {
+                    "id": "4d9d636e-d088-4337-8466-ed0e1a3b00d4",
+                    "name": "response",
+                    "originalRequest": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "description": "Added as a part of security scheme: basic",
+                                "key": "Authorization",
+                                "value": "Basic <credentials>"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"userId\": \"mKFBDNVq_1g7orBw\",\n  \"password\": \"buEI@kSaLc9a5HvPFMp?o#lVwD1ZU\",\n  \"timestamp\": 46674528\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/register",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "register"
+                            ]
+                        }
+                    },
+                    "status": "OK",
+                    "code": 200,
+                    "_postman_previewlanguage": "json",
+                    "header": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ],
+                    "cookie": [],
+                    "responseTime": null,
+                    "body": "{\n  \"success\": false,\n  \"reason\": \"esse aliquip ullamco\"\n}"
+                }
+            ]
+        },
+        {
+            "name": "/journey",
+            "id": "e17dd632-f3ac-483b-be78-6aa0cc35b583",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{baseUrl}}/journey?token=1JKrkCzhzAepW4G8&from_latitude=53666813.53286114&to_latitude=53666813.53286114&from_longitude=53666813.53286114&to_longitude=53666813.53286114",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "journey"
+                    ],
+                    "query": [
+                        {
+                            "key": "token",
+                            "value": "1JKrkCzhzAepW4G8",
+                            "description": "(Required) "
+                        },
+                        {
+                            "key": "from_latitude",
+                            "value": "53666813.53286114",
+                            "description": "(Required) "
+                        },
+                        {
+                            "key": "to_latitude",
+                            "value": "53666813.53286114",
+                            "description": "(Required) "
+                        },
+                        {
+                            "key": "from_longitude",
+                            "value": "53666813.53286114",
+                            "description": "(Required) "
+                        },
+                        {
+                            "key": "to_longitude",
+                            "value": "53666813.53286114",
+                            "description": "(Required) "
+                        }
+                    ]
+                }
+            },
+            "response": [
+                {
+                    "id": "52556b26-f382-435e-9aaf-e097b02ff781",
+                    "name": "response",
+                    "originalRequest": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "description": "Added as a part of security scheme: basic",
+                                "key": "Authorization",
+                                "value": "Basic <credentials>"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/journey?token=1JKrkCzhzAepW4G8&from_latitude=53666813.53286114&to_latitude=53666813.53286114&from_longitude=53666813.53286114&to_longitude=53666813.53286114",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "journey"
+                            ],
+                            "query": [
+                                {
+                                    "key": "token",
+                                    "value": "1JKrkCzhzAepW4G8"
+                                },
+                                {
+                                    "key": "from_latitude",
+                                    "value": "53666813.53286114"
+                                },
+                                {
+                                    "key": "to_latitude",
+                                    "value": "53666813.53286114"
+                                },
+                                {
+                                    "key": "from_longitude",
+                                    "value": "53666813.53286114"
+                                },
+                                {
+                                    "key": "to_longitude",
+                                    "value": "53666813.53286114"
+                                }
+                            ]
+                        }
+                    },
+                    "status": "OK",
+                    "code": 200,
+                    "_postman_previewlanguage": "json",
+                    "header": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ],
+                    "cookie": [],
+                    "responseTime": null,
+                    "body": "[\n  {\n    \"journeyId\": \"47b04b05-a580-49db-deb4-f09d63521b20\",\n    \"createdTime\": 68886130,\n    \"endTime\": 77010570,\n    \"status\": \"Waiting\",\n    \"from\": {\n      \"latitude\": 46245024.05517244,\n      \"longitude\": 39555696.600325525\n    },\n    \"to\": {\n      \"latitude\": -95756982.11087658,\n      \"longitude\": 17518825.24833657\n    },\n    \"host\": \"idv7uO3XQal\",\n    \"maxMember\": 21255555,\n    \"memebers\": [\n      {\n        \"userId\": \"bZT3SrINMxoSfkR\",\n        \"status\": \"Waiting\"\n      }\n    ]\n  }\n]"
+                }
+            ]
+        },
+        {
+            "name": "/journey/:id",
+            "id": "16db5062-69b0-4309-a561-746535e3c876",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{baseUrl}}/journey/:id?token=1JKrkCzhzAepW4G8",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "journey",
+                        ":id"
+                    ],
+                    "query": [
+                        {
+                            "key": "token",
+                            "value": "1JKrkCzhzAepW4G8",
+                            "description": "(Required) "
+                        }
+                    ],
+                    "variable": [
+                        {
+                            "id": "151676cc-9b41-4e81-99ef-912689352185",
+                            "key": "id",
+                            "value": "mbHWETMPe4AK8WQujtcgiI7gl5ya",
+                            "description": "(Required) "
+                        }
+                    ]
+                }
+            },
+            "response": [
+                {
+                    "id": "77b6074a-b8bd-4371-8ac7-9cfe04ac21d1",
+                    "name": "response",
+                    "originalRequest": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "description": "Added as a part of security scheme: basic",
+                                "key": "Authorization",
+                                "value": "Basic <credentials>"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/journey/:id?token=1JKrkCzhzAepW4G8",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "journey",
+                                ":id"
+                            ],
+                            "query": [
+                                {
+                                    "key": "token",
+                                    "value": "1JKrkCzhzAepW4G8"
+                                }
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "mbHWETMPe4AK8WQujtcgiI7gl5ya",
+                                    "description": "(Required) "
+                                }
+                            ]
+                        }
+                    },
+                    "status": "OK",
+                    "code": 200,
+                    "_postman_previewlanguage": "json",
+                    "header": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ],
+                    "cookie": [],
+                    "responseTime": null,
+                    "body": "{\n  \"userId\": \"mKFBDNVq_1g7orBw\",\n  \"password\": \"buEI@kSaLc9a5HvPFMp?o#lVwD1ZU\",\n  \"timestamp\": 46674528\n}"
+                }
+            ]
+        },
+        {
+            "name": "/journey/create",
+            "id": "33f673b9-d91b-4ee5-bf7a-ee06cc87a760",
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"userId\": \"yVKDhP9EQ36RDoVXs7Ds\",\n  \"from\": {\n    \"latitude\": 16336285.80693917,\n    \"longitude\": 46932315.41382223\n  },\n  \"to\": {\n    \"latitude\": 98529887.05880094,\n    \"longitude\": -89898889.76665598\n  }\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/journey/create",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "journey",
+                        "create"
+                    ]
+                }
+            },
+            "response": [
+                {
+                    "id": "51bc65f8-d6c8-48ce-a54d-b4d505a2b0de",
+                    "name": "response",
+                    "originalRequest": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "description": "Added as a part of security scheme: basic",
+                                "key": "Authorization",
+                                "value": "Basic <credentials>"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"userId\": \"yVKDhP9EQ36RDoVXs7Ds\",\n  \"from\": {\n    \"latitude\": 16336285.80693917,\n    \"longitude\": 46932315.41382223\n  },\n  \"to\": {\n    \"latitude\": 98529887.05880094,\n    \"longitude\": -89898889.76665598\n  }\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/journey/create",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "journey",
+                                "create"
+                            ]
+                        }
+                    },
+                    "status": "OK",
+                    "code": 200,
+                    "_postman_previewlanguage": "json",
+                    "header": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ],
+                    "cookie": [],
+                    "responseTime": null,
+                    "body": "{\n  \"success\": true,\n  \"reason\": \"minim Lorem irure voluptate esse\",\n  \"token\": \"SNtgROlyNsiQ\",\n  \"payload\": {\n    \"journeyId\": \"urn:uuid:f8ba0193-174b-0052-88ef-04f4052915f2\",\n    \"createdTime\": 83736137,\n    \"endTime\": 87649840,\n    \"status\": \"Start\",\n    \"from\": {\n      \"latitude\": -38203911.56508251,\n      \"longitude\": -58199325.003809884\n    },\n    \"to\": {\n      \"latitude\": 49060824.1852141,\n      \"longitude\": -6667893.505376026\n    },\n    \"host\": \"HCqCRMqPM6c8CCVe7ypfCkm3s0\",\n    \"maxMember\": 39136798,\n    \"memebers\": [\n      {\n        \"userId\": \"qhZcvpCKM\",\n        \"status\": \"Arrived\"\n      }\n    ]\n  }\n}"
+                }
+            ]
+        },
+        {
+            "name": "/journey/join",
+            "id": "cf5a46b9-e5a9-4015-b7fc-b286f83aa4b1",
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"userId\": \"Prqsg7B_eZ2OIYU_0gg8X3ooH3VA\",\n  \"journeyId\": {\n    \"journeyId\": \"72adb99f-7710-5c85-5ddf-e9abec100f18\",\n    \"createdTime\": 80039022,\n    \"endTime\": 79513720,\n    \"status\": \"End\",\n    \"from\": {\n      \"latitude\": 49458011.47189596,\n      \"longitude\": -87139650.77873142\n    },\n    \"to\": {\n      \"latitude\": -17975844.20884481,\n      \"longitude\": -62181928.7281522\n    },\n    \"host\": \"dbblGtisU9nb9AQ\",\n    \"maxMember\": 22720779,\n    \"memebers\": [\n      {\n        \"userId\": \"rDMecQ0VyiEZZyKKGNhXrsZ\",\n        \"status\": \"Waiting\"\n      }\n    ]\n  }\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/journey/join",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "journey",
+                        "join"
+                    ]
+                }
+            },
+            "response": [
+                {
+                    "id": "1e149832-1792-449c-96f3-adae71eeb83c",
+                    "name": "response",
+                    "originalRequest": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "description": "Added as a part of security scheme: basic",
+                                "key": "Authorization",
+                                "value": "Basic <credentials>"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"userId\": \"Prqsg7B_eZ2OIYU_0gg8X3ooH3VA\",\n  \"journeyId\": {\n    \"journeyId\": \"72adb99f-7710-5c85-5ddf-e9abec100f18\",\n    \"createdTime\": 80039022,\n    \"endTime\": 79513720,\n    \"status\": \"End\",\n    \"from\": {\n      \"latitude\": 49458011.47189596,\n      \"longitude\": -87139650.77873142\n    },\n    \"to\": {\n      \"latitude\": -17975844.20884481,\n      \"longitude\": -62181928.7281522\n    },\n    \"host\": \"dbblGtisU9nb9AQ\",\n    \"maxMember\": 22720779,\n    \"memebers\": [\n      {\n        \"userId\": \"rDMecQ0VyiEZZyKKGNhXrsZ\",\n        \"status\": \"Waiting\"\n      }\n    ]\n  }\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/journey/join",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "journey",
+                                "join"
+                            ]
+                        }
+                    },
+                    "status": "OK",
+                    "code": 200,
+                    "_postman_previewlanguage": "json",
+                    "header": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ],
+                    "cookie": [],
+                    "responseTime": null,
+                    "body": "{\n  \"success\": false,\n  \"reason\": \"ut in\",\n  \"token\": \"C9VmixzkUi1irqMm\"\n}"
+                }
+            ]
+        },
+        {
+            "name": "/journey/exit",
+            "id": "e54e36b5-778d-4e03-99d1-36fc2c0c7ffc",
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"userId\": \"Prqsg7B_eZ2OIYU_0gg8X3ooH3VA\",\n  \"journeyId\": {\n    \"journeyId\": \"72adb99f-7710-5c85-5ddf-e9abec100f18\",\n    \"createdTime\": 80039022,\n    \"endTime\": 79513720,\n    \"status\": \"End\",\n    \"from\": {\n      \"latitude\": 49458011.47189596,\n      \"longitude\": -87139650.77873142\n    },\n    \"to\": {\n      \"latitude\": -17975844.20884481,\n      \"longitude\": -62181928.7281522\n    },\n    \"host\": \"dbblGtisU9nb9AQ\",\n    \"maxMember\": 22720779,\n    \"memebers\": [\n      {\n        \"userId\": \"rDMecQ0VyiEZZyKKGNhXrsZ\",\n        \"status\": \"Waiting\"\n      }\n    ]\n  }\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/journey/exit",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "journey",
+                        "exit"
+                    ]
+                }
+            },
+            "response": [
+                {
+                    "id": "a05fb661-f28f-4655-ab4c-38c74d88f0e1",
+                    "name": "response",
+                    "originalRequest": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "description": "Added as a part of security scheme: basic",
+                                "key": "Authorization",
+                                "value": "Basic <credentials>"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"userId\": \"Prqsg7B_eZ2OIYU_0gg8X3ooH3VA\",\n  \"journeyId\": {\n    \"journeyId\": \"72adb99f-7710-5c85-5ddf-e9abec100f18\",\n    \"createdTime\": 80039022,\n    \"endTime\": 79513720,\n    \"status\": \"End\",\n    \"from\": {\n      \"latitude\": 49458011.47189596,\n      \"longitude\": -87139650.77873142\n    },\n    \"to\": {\n      \"latitude\": -17975844.20884481,\n      \"longitude\": -62181928.7281522\n    },\n    \"host\": \"dbblGtisU9nb9AQ\",\n    \"maxMember\": 22720779,\n    \"memebers\": [\n      {\n        \"userId\": \"rDMecQ0VyiEZZyKKGNhXrsZ\",\n        \"status\": \"Waiting\"\n      }\n    ]\n  }\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/journey/exit",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "journey",
+                                "exit"
+                            ]
+                        }
+                    },
+                    "status": "OK",
+                    "code": 200,
+                    "_postman_previewlanguage": "json",
+                    "header": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ],
+                    "cookie": [],
+                    "responseTime": null,
+                    "body": "{\n  \"success\": false,\n  \"reason\": \"ut in\",\n  \"token\": \"C9VmixzkUi1irqMm\"\n}"
+                }
+            ]
+        }
+    ],
+    "auth": {
+        "type": "basic",
+        "basic": [
+            {
+                "key": "username",
+                "value": "<Basic Auth Username>",
+                "type": "string"
+            },
+            {
+                "key": "password",
+                "value": "<Basic Auth Password>",
+                "type": "string"
+            }
+        ]
+    },
+    "variable": [
+        {
+            "id": "57262039-5995-4195-96ca-393cee5f12ea",
+            "key": "baseUrl",
+            "value": "localhost:3000",
+            "type": "string"
+        }
+    ]
+}

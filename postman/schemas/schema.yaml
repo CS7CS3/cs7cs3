@@ -1,0 +1,385 @@
+openapi: 3.0.0
+info:
+  version: 0.0.1
+  title: Journey Sharing
+  license:
+    name: MIT
+servers:
+  - url: localhost:3000
+paths:
+  "/login":
+    description: ""
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/LoginResponse"
+  "/register":
+    description: ""
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RegisterRequest"
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/RegisterResponse"
+  "/journey":
+    description: ""
+    get:
+      parameters:
+        - name: token
+          in: query
+          required: true
+          schema:
+            "$ref": "#/components/schemas/Token"
+        - name: from_latitude
+          in: query
+          required: true
+          schema:
+            type: number
+        - name: to_latitude
+          in: query
+          required: true
+          schema:
+            type: number
+        - name: from_longitude
+          in: query
+          required: true
+          schema:
+            type: number
+        - name: to_longitude
+          in: query
+          required: true
+          schema:
+            type: number
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: array
+                minItems: 1
+                items:
+                  "$ref": "#/components/schemas/Journey"
+  "/journey/{id}":
+    description: ""
+    get:
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            "$ref": "#/components/schemas/UserId"
+        - in: query
+          name: token
+          required: true
+          schema:
+            "$ref": "#/components/schemas/Token"
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/LoginRequest"
+                properties:
+                  payload:
+                    type: object
+  "/journey/create":
+    description: ""
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateJourneyRequest"
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/CreateJourneyResponse"
+  "/journey/join":
+    description: ""
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/JoinJourneyRequest"
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/JoinJourneyResponse"
+  "/journey/exit":
+    description: ""
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ExitJourneyRequest"
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ExitJourneyResponse"
+components:
+  schemas:
+    UUID:
+      type: string
+      format: uuid
+    UserId:
+      type: string
+      pattern: "^[A-Za-z_][A-Za-z0-9_]{8,30}$"
+    JourneyId:
+      "$ref": "#/components/schemas/UUID"
+    ReviewId:
+      "$ref": "#/components/schemas/UUID"
+    Rating:
+      type: number
+      minimum: 0
+      maximum: 5
+    Password:
+      type: string
+      pattern: "^[A-Za-z0-9#$@!%&*?]{8,30}$"
+    Timestamp:
+      type: integer
+      minimum: 0
+    Token:
+      type: string
+      pattern: "^[A-Za-z0-9_]{8,30}$"
+    AvatarUrl:
+      type: string
+      format: url
+    Location:
+      type: object
+      properties:
+        latitude:
+          type: number
+        longitude:
+          type: number
+    JourneyStatus:
+      type: string
+      enum: [Waiting, Start, End]
+    JourneyMemberStatus:
+      type: string
+      enum: [Waiting, Travelling, Arrived]
+    Journey:
+      type: object
+      properties:
+        journeyId:
+          "$ref": "#/components/schemas/JourneyId"
+        createdTime:
+          "$ref": "#/components/schemas/Timestamp"
+        endTime:
+          "$ref": "#/components/schemas/Timestamp"
+        status:
+          "$ref": "#/components/schemas/JourneyStatus"
+        from:
+          "$ref": "#/components/schemas/Location"
+        to:
+          "$ref": "#/components/schemas/Location"
+        host:
+          "$ref": "#/components/schemas/UserId"
+        maxMember:
+          type: integer
+          minimum: 1
+        memebers:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            properties:
+              userId:
+                "$ref": "#/components/schemas/UserId"
+              status:
+                "$ref": "#/components/schemas/JourneyMemberStatus"
+    JourneyMini:
+      type: object
+      properties:
+        journeyId:
+          "$ref": "#/components/schemas/JourneyId"
+        createdTime:
+          "$ref": "#/components/schemas/Timestamp"
+        endTime:
+          "$ref": "#/components/schemas/Timestamp"
+        status:
+          "$ref": "#/components/schemas/JourneyStatus"
+        from:
+          "$ref": "#/components/schemas/Location"
+        to:
+          "$ref": "#/components/schemas/Location"
+        host:
+          "$ref": "#/components/schemas/UserId"
+    UserInfo:
+      type: object
+      properties:
+        userId:
+          "$ref": "#/components/schemas/UserId"
+        avatarUrl:
+          "$ref": "#/components/schemas/AvatarUrl"
+        bio:
+          type: string
+          maxLength: 100
+        rating:
+          "$ref": "#/components/schemas/Rating"
+        reviews:
+          type: array
+          items:
+            "$ref": "#/components/schemas/ReviewId"
+        histories:
+          type: array
+          items:
+            "$ref": "#/components/schemas/JourneyId"
+    UserInfoMini:
+      type: object
+      properties:
+        userId:
+          "$ref": "#/components/schemas/UserId"
+        avatarUrl:
+          "$ref": "#/components/schemas/AvatarUrl"
+        rating:
+          "$ref": "#/components/schemas/Rating"
+    Review:
+      type: object
+      properties:
+        reviewId:
+          "$ref": "#/components/schemas/ReviewId"
+        revieweeId:
+          "$ref": "#/components/schemas/UserId"
+        reviewerId:
+          "$ref": "#/components/schemas/UserId"
+        anonymous:
+          type: boolean
+        rating:
+          "$ref": "#/components/schemas/Rating"
+        content:
+          type: string
+          maxLength: 100
+    ReviewMini:
+      type: object
+      properties:
+        reviewId:
+          "$ref": "#/components/schemas/ReviewId"
+        revieweeId:
+          "$ref": "#/components/schemas/UserId"
+        reviewerId:
+          "$ref": "#/components/schemas/UserId"
+        anonymous:
+          type: boolean
+        rating:
+          "$ref": "#/components/schemas/Rating"
+    LoginRequest:
+      type: object
+      properties:
+        userId:
+          "$ref": "#/components/schemas/UserId"
+        password:
+          "$ref": "#/components/schemas/Password"
+        timestamp:
+          "$ref": "#/components/schemas/Timestamp"
+    LoginResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        reason:
+          type: string
+        token:
+          "$ref": "#/components/schemas/Token"
+    RegisterRequest:
+      type: object
+      properties:
+        userId:
+          "$ref": "#/components/schemas/UserId"
+        password:
+          "$ref": "#/components/schemas/Password"
+        timestamp:
+          "$ref": "#/components/schemas/Timestamp"
+    RegisterResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        reason:
+          type: string
+    CreateJourneyRequest:
+      type: object
+      properties:
+        userId:
+          "$ref": "#/components/schemas/UserId"
+        from:
+          "$ref": "#/components/schemas/Location"
+        to:
+          "$ref": "#/components/schemas/Location"
+    CreateJourneyResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        reason:
+          type: string
+        token:
+          "$ref": "#/components/schemas/Token"
+        payload:
+          "$ref": "#/components/schemas/Journey"
+    JoinJourneyRequest:
+      type: object
+      properties:
+        userId:
+          "$ref": "#/components/schemas/UserId"
+        journeyId:
+          "$ref": "#/components/schemas/Journey"
+    JoinJourneyResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        reason:
+          type: string
+        token:
+          "$ref": "#/components/schemas/Token"
+    ExitJourneyRequest:
+      type: object
+      properties:
+        userId:
+          "$ref": "#/components/schemas/UserId"
+        journeyId:
+          "$ref": "#/components/schemas/Journey"
+    ExitJourneyResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        reason:
+          type: string
+        token:
+          "$ref": "#/components/schemas/Token"
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+security:
+  - BasicAuth: []
