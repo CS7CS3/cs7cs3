@@ -3,22 +3,22 @@ package com.cs7cs3.JourneySharing.controllers;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 import com.cs7cs3.JourneySharing.db.JourneyRepository;
 import com.cs7cs3.JourneySharing.entities.Journey;
 import com.cs7cs3.JourneySharing.entities.Location;
-import com.cs7cs3.JourneySharing.entities.Response;
 import com.cs7cs3.JourneySharing.entities.base.Empty;
 import com.cs7cs3.JourneySharing.entities.request.CreateJourneyRequest;
 import com.cs7cs3.JourneySharing.entities.request.ExitJourneyRequest;
 import com.cs7cs3.JourneySharing.entities.request.JoinJourneyRequest;
 import com.cs7cs3.JourneySharing.entities.request.Request;
+import com.cs7cs3.JourneySharing.entities.response.Response;
+import com.cs7cs3.JourneySharing.utils.Utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,30 +34,29 @@ public class JourneyController {
   private Logger logger = LoggerFactory.getLogger(this.getClass());
 
   @Autowired
-  private JourneyRepository repository;
+  private JourneyRepository journeyRepository;
 
   @GetMapping("/{id}")
   public Response<Journey> getById(@PathVariable("id") String id, @RequestParam("token") String token) {
-    if (/* var token = req.token; validate(token) */ false) {
-      logger.error("?");
-      return Response.makeResponse(false, "?", "", Optional.empty());
+    if (Utils.validateToken(token)) {
+      return Response.makeError("token validation failed");
     }
 
-    var res = repository.findById(id);
+    var res = journeyRepository.findById(id);
     if (!res.isPresent()) {
-      return Response.makeResponse(false, "id does not exist", /* next_token(token) */ "", Optional.empty());
+      return Response.makeError("journey does not exist");
     }
 
-    return Response.makeResponse(/* next_token(token) */ "", res.get());
+    return Response.makeResponse(Utils.nextToken(token), res.get());
   }
 
   @GetMapping
   public Response<List<Journey>> getByLocation(@RequestParam("token") String token,
       @RequestParam("from_latitude") long from_latitude, @RequestParam("from_longitude") long from_longitude,
       @RequestParam("to_latitude") long to_latitude, @RequestParam("to_longitude") long to_longitude) {
-    if (/* var token = req.token; validate(token) */ false) {
-      logger.error("?");
-      return Response.makeResponse(false, "?", "", Optional.empty());
+
+    if (!Utils.validateToken(token)) {
+      return Response.makeError("token validation failed");
     }
 
     Location from = new Location(), to = new Location();
@@ -66,9 +65,9 @@ public class JourneyController {
     to.latitude = to_latitude;
     to.longitude = to_longitude;
 
-    var res = repository.findAvailableJourneys();
+    var res = journeyRepository.findAvailableJourneys();
     if (res.isEmpty()) {
-      return Response.makeResponse(false, "no journey available", /* next_token(token) */ "", Optional.empty());
+      return Response.makeError("no journey available");
     }
 
     res.sort(new Comparator<Journey>() {
@@ -86,122 +85,106 @@ public class JourneyController {
       _res.add(res.get(i));
     }
 
-    return Response.makeResponse(/* next_token(token) */ "", _res);
+    return Response.makeResponse(Utils.nextToken(token), _res);
   }
 
   @PostMapping("/create")
   public Response<Journey> createJourney(@RequestBody Request<CreateJourneyRequest> req) {
     logger.info(req.toString());
+
     if (!req.validate()) {
-      logger.error("?");
-      return Response.makeResponse(false, "?", "", Optional.empty());
+      return Response.makeError("request validation failed");
     }
 
-    // empty payload, early reject
     if (!req.payload.isPresent()) {
-      logger.error("?");
-      return Response.makeResponse(false, "?", "", Optional.empty());
+      return Response.makeError("empty payload");
     }
 
-    if (/* var token = req.token; validate(token) */ false) {
-      logger.error("?");
-      return Response.makeResponse(false, "?", "", Optional.empty()); 
-    }
-
-    // schema validation
-    if (!req.payload.get().validate()) {
-      logger.error("?");
-      return Response.makeResponse(false, "?", "", Optional.empty());
+    if (!Utils.validateToken(req.token)) {
+      return Response.makeError("token validation failed");
     }
 
     var payload = req.payload.get();
-    var journey = Journey.make(payload.userId, payload.from, payload.to);
 
-    repository.save(journey);
+    if (!payload.validate()) {
+      return Response.makeError("payload schema validation failed");
+    }
 
-    return Response.makeResponse(true, "", /* next_token(token) */ "", journey);
+    var journey = Journey.make(payload);
+    try {
+      journeyRepository.save(journey);
+    } catch (DataIntegrityViolationException e) {
+      return Response.makeError("user id does not exist");
+    }
+
+    return Response.makeResponse(Utils.nextToken(req.token), journey);
   }
 
   @PostMapping("/join")
-  @Transactional
-  public Response<Empty> updateJourneyStatus(@RequestBody Request<JoinJourneyRequest> req) {
+  public Response<Journey> updateJourneyStatus(@RequestBody Request<JoinJourneyRequest> req) {
     logger.info(req.toString());
+
     if (!req.validate()) {
-      logger.error("?");
-      return Response.makeResponse(false, "?", "", Optional.empty());
+      return Response.makeError("request validation failed");
     }
 
-    // empty payload, early reject
     if (!req.payload.isPresent()) {
-      logger.error("?");
-      return Response.makeResponse(false, "?", "", Optional.empty());
+      return Response.makeError("empty payload");
     }
 
-    if (/* var token = req.token; validate(token) */ false) {
-      logger.error("?");
-      return Response.makeResponse(false, "?", "", Optional.empty());
-    }
-
-    // schema validation
-    if (!req.payload.get().validate()) {
-      logger.error("?");
-      return Response.makeResponse(false, "?", "", Optional.empty());
+    if (!Utils.validateToken(req.token)) {
+      return Response.makeError("token validation failed");
     }
 
     var payload = req.payload.get();
-    var journey = repository.findById(payload.journeyId);
-    if (!journey.isPresent()) {
-      logger.error("?");
-      return Response.makeResponse(false, "?", "", Optional.empty());
+
+    if (!payload.validate()) {
+      return Response.makeError("payload schema validation failed");
     }
 
-    journey.get().members.add(payload.userId);
-    repository.save(journey.get());
-    // repository.
+    try {
+      if (!(journeyRepository.join(payload.journeyId, payload.userId) > 0)) {
+        return Response.makeError("unknown error");
+      }
+    } catch (DataIntegrityViolationException e) {
+      return Response.makeError("journey/user id inconsistency");
+    }
 
-    return Response.makeResponse("token");
+    var journey = journeyRepository.findById(payload.journeyId);
+    return Response.makeResponse(Utils.nextToken(req.token), journey);
   }
 
   @PostMapping("/exit")
-  @Transactional
   public Response<Empty> exitJourneyStatus(@RequestBody Request<ExitJourneyRequest> req) {
     logger.info(req.toString());
+
     if (!req.validate()) {
-      logger.error("?");
-      return Response.makeResponse(false, "?", "", Optional.empty());
+      return Response.makeError("request validation failed");
     }
 
-    // empty payload, early reject
+    if (!Utils.validateToken(req.token)) {
+      return Response.makeError("token validation failed");
+    }
+
     if (!req.payload.isPresent()) {
-      logger.error("?");
-      return Response.makeResponse(false, "?", "", Optional.empty());
-    }
-
-    if (/* var token = req.token; validate(token) */ false) {
-      logger.error("?");
-      return Response.makeResponse(false, "?", "", Optional.empty());
-    }
-
-    // schema validation
-    if (!req.payload.get().validate()) {
-      logger.error("?");
-      return Response.makeResponse(false, "?", "", Optional.empty());
+      return Response.makeError("empty payload");
     }
 
     var payload = req.payload.get();
-    var journey = repository.findById(payload.journeyId);
-    if (!journey.isPresent()) {
-      logger.error("?");
-      return Response.makeResponse(false, "?", "", Optional.empty());
+
+    if (!payload.validate()) {
+      return Response.makeError("payload schema validation failed");
     }
 
-    if (!journey.get().members.remove(payload.userId)) {
-      logger.error("?");
-      return Response.makeResponse(false, "?", "", Optional.empty());
+    try {
+      if (!(journeyRepository.exit(payload.userId) > 0)) {
+        return Response.makeError("unknown error");
+      }
+    } catch (DataIntegrityViolationException e) {
+      return Response.makeError("journey/user id inconsistency");
     }
-    repository.save(journey.get());
 
-    return Response.makeResponse("token");
+    return Response.makeResponse(Utils.nextToken(req.token));
   }
 
 }

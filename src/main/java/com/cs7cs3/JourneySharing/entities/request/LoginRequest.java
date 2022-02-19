@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class LoginRequest extends Validatable {
-  public String userId = "";
+  public String username = "";
   public String password = "";
   public long timestamp = 0l;
 }

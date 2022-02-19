@@ -1,4 +1,4 @@
-package com.cs7cs3.JourneySharing.entities;
+package com.cs7cs3.JourneySharing.entities.response;
 
 import java.util.Optional;
 
@@ -11,13 +11,23 @@ import lombok.Data;
 @Data
 @JsonInclude(Include.NON_EMPTY)
 public class Response<T> extends Validatable {
+  public static <U> Response<U> makeError(String reason) {
+    Response<U> resp = new Response<U>(false, reason, null, Optional.empty());
+    return resp;
+  }
+
   public static <U> Response<U> makeResponse(String token) {
-    Response<U> resp = new Response<U>(true, "", token, Optional.empty());
+    Response<U> resp = new Response<U>(true, null, token, Optional.empty());
     return resp;
   }
 
   public static <U> Response<U> makeResponse(String token, U u) {
-    Response<U> resp = new Response<U>(true, "", token, u);
+    Response<U> resp = new Response<U>(true, null, token, u);
+    return resp;
+  }
+
+  public static <U> Response<U> makeResponse(String token, Optional<U> u) {
+    Response<U> resp = new Response<U>(true, null, token, u);
     return resp;
   }
 

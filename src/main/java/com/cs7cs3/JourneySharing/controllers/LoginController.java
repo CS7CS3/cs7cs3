@@ -1,11 +1,10 @@
 package com.cs7cs3.JourneySharing.controllers;
 
-import java.util.Optional;
-
 import com.cs7cs3.JourneySharing.db.AccountRepository;
-import com.cs7cs3.JourneySharing.entities.Response;
 import com.cs7cs3.JourneySharing.entities.base.Empty;
 import com.cs7cs3.JourneySharing.entities.request.LoginRequest;
+import com.cs7cs3.JourneySharing.entities.response.Response;
+import com.cs7cs3.JourneySharing.utils.Utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,30 +20,24 @@ import org.springframework.web.bind.annotation.RestController;
 public class LoginController {
 
   @Autowired
-  private AccountRepository repository;
+  private AccountRepository accountRepository;
+
   private Logger logger = LoggerFactory.getLogger(this.getClass());
 
   @PostMapping
   @ResponseBody
-  public Response<Empty> PostHandler(@RequestBody LoginRequest req) {
+  public Response<Empty> login(@RequestBody LoginRequest req) {
     logger.info(req.toString());
     if (!req.validate()) {
-      logger.error("?");
-      return Response.makeResponse(false, "?", "", Optional.empty());
+      return Response.makeError("request validation failed");
     }
 
-    var res = repository.findById(req.userId);
-    if (!res.isPresent()) {
-      logger.error("?");
-      return Response.makeResponse(false, "id does not exist", "", Optional.empty());
+    boolean ret = accountRepository.testPassword(req.username, req.password) > 0;
+    if (!ret) {
+      return Response.makeError("wrong username or password");
     }
 
-    if (!res.get().password.equals(req.password)) {
-      logger.error("?");
-      return Response.makeResponse(false, "?", "", Optional.empty());
-    }
-
-    return Response.makeResponse("token");
+    return Response.makeResponse(Utils.makeToken(req.username));
   }
 
 }
