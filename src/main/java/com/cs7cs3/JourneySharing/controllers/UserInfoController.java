@@ -110,17 +110,39 @@ package com.cs7cs3.JourneySharing.controllers;// package com.cs7cs3.JourneyShari
 // }
 
 
-import com.cs7cs3.JourneySharing.entities.base.validator.Validatable;
+import com.cs7cs3.JourneySharing.db.UserInfoRepository;
+import com.cs7cs3.JourneySharing.entities.UserInfo;
+import com.cs7cs3.JourneySharing.entities.response.Response;
+import com.cs7cs3.JourneySharing.utils.Utils;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.logging.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/userInfo")
-public class UserInfoController extends Validatable {
-    private Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
+@RequestMapping("/user_info")
+public class UserInfoController {
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    @Autowired
+    private UserInfoRepository repository;
+
+    @GetMapping("/{id}")
+    public Response<UserInfo> get(@PathVariable("id")String id, @RequestParam("token") String token){
+
+        if (!Utils.validateToken(token)) {
+            return Response.makeError("token validation failed");
+        }
+
+        var res = repository.findById(id);
+        System.out.println(res);
+
+        if (!res.isPresent()) {
+            return Response.makeError("user does not exist");
+        }
+
+        return Response.makeResponse(Utils.nextToken(token), res.get());
+
+    }
 
 }

@@ -38,11 +38,11 @@ public class UserInfo extends Validatable {
   // 表示用户当前的状态
   public Journey.MemberStatus status = Journey.MemberStatus.NotInAGroup;
 
-  @ElementCollection
-  @Column(name = "review_id")
-  public List<String> reviews = new ArrayList<String>();
-
-  @ElementCollection
-  @Column(name = "journey_id")
-  public List<String> histories = new ArrayList<String>();
+//  @ElementCollection
+//  @Column(name = "review_id")
+//  public List<String> reviews = new ArrayList<String>();
+//
+//  @ElementCollection
+//  @Column(name = "journey_id")
+//  public List<String> histories = new ArrayList<String>();
 }
