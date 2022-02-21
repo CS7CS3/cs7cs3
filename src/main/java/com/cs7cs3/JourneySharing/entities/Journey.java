@@ -4,14 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.cs7cs3.JourneySharing.entities.base.validator.Validatable;
 import com.cs7cs3.JourneySharing.entities.request.CreateJourneyRequest;
@@ -33,7 +26,9 @@ public class Journey extends Validatable {
 
     journey.from = from;
     journey.to = to;
-    journey.members.add(userId);
+//    journey.members.add(userId);
+    journey.members.add(JourneyMember.make(userId,MemberStatus.Waiting));
+
     journey.host = userId;
 
     return journey;
@@ -48,18 +43,36 @@ public class Journey extends Validatable {
 
     journey.from = req.from;
     journey.to = req.to;
-    journey.members.add(req.userId);
+//    journey.members.add(req.userId);
+    journey.members.add(JourneyMember.make(req.userId,MemberStatus.Waiting));
     journey.host = req.userId;
+
 
     return journey;
   }
 
+  //不该是静态吧
   public enum JourneyStatus {
     Waiting, Start, End
   }
 
+  // 不知道表示了什么，不该出现在这里
   public enum MemberStatus {
     NotInAGroup, Waiting, Travelling, Arrived
+  }
+
+  @Embeddable
+  public static class JourneyMember{
+    public static JourneyMember make (String userId, MemberStatus status){
+      var journeyMember = new JourneyMember();
+      journeyMember.userId = userId;
+      journeyMember.status = status;
+
+      return  journeyMember;
+    }
+
+    public String userId;
+    public MemberStatus status = MemberStatus.Waiting;
   }
 
   @Id
@@ -90,7 +103,9 @@ public class Journey extends Validatable {
   public String host = "";
 
   @ElementCollection
-  @Column(name = "user_id")
-  public List<String> members = new ArrayList<String>();
+//  @Column(name = "user_id")
+//  public List<String> members = new ArrayList<String>();
+//  @Embedded
+  public List<JourneyMember> members = new ArrayList<JourneyMember>();
 
 }

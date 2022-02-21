@@ -65,6 +65,7 @@ DROP TABLE IF EXISTS `journey_members`;
 CREATE TABLE `journey_members` (
   `journey_id` varchar(255) NOT NULL DEFAULT '',
   `user_id` varchar(255) NOT NULL DEFAULT '',
+  `status` int(11) NOT NULL DEFAULT 0,
   UNIQUE KEY `98dd5112-e277-4c48-88e3-242c2157a34e` (`user_id`),
   KEY `0bd04255-628a-415f-84a4-02073e5cdfd1` (`journey_id`),
   CONSTRAINT `0bd04255-628a-415f-84a4-02073e5cdfd1` FOREIGN KEY (`journey_id`) REFERENCES `journey` (`id`) ON DELETE CASCADE,
@@ -154,12 +155,13 @@ DROP TABLE IF EXISTS `user_review`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_review` (
-  `id` varchar(255) NOT NULL DEFAULT '',
+  `review_id` varchar(255) NOT NULL DEFAULT '',
   `anonymous` bit(1) NOT NULL DEFAULT b'0',
   `content` varchar(255) NOT NULL DEFAULT '',
   `rating` double NOT NULL DEFAULT 0,
   `user_id` varchar(255) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`)
+  `reviewee_id` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`review_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

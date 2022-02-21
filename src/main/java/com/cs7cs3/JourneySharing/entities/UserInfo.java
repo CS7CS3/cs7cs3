@@ -35,6 +35,7 @@ public class UserInfo extends Validatable {
   public String bio = "";
   public double rating = 0.0;
 
+  // 表示用户当前的状态
   public Journey.MemberStatus status = Journey.MemberStatus.NotInAGroup;
 
   @ElementCollection

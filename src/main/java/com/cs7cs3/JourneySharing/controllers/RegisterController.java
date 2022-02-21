@@ -32,7 +32,7 @@ public class RegisterController {
   private Logger logger = LoggerFactory.getLogger(this.getClass());
 
   @Transactional
-  private boolean createAccount(RegisterRequest req) {
+  public boolean createAccount(RegisterRequest req) {
     try {
       Account account = Account.make(req);
       UserInfo userInfo = UserInfo.make(account, req);

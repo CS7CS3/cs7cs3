@@ -13,23 +13,24 @@ import lombok.NonNull;
 @Data
 @Entity
 public class UserReview extends Validatable {
-  static public UserReview make(@NonNull String revieweeId, double rating, @NonNull String content) {
+  static public UserReview make(@NonNull String userId, @NonNull String revieweeId, double rating, @NonNull String content) {
     var review = new UserReview();
 
-    review.reviewId = UUID.randomUUID().toString();
-    review.userId = revieweeId;
+    review.userId = userId;
+    review.revieweeId = revieweeId;
     review.rating = rating;
     review.content = content;
+
 
     return review;
   }
 
   @Id
-  public String reviewId = "";
-
+  public String reviewId = UUID.randomUUID().toString();
   public String userId = "";
   public boolean anonymous = true;
   public double rating = 0.0;
   public String content = "";
+  public String revieweeId = "";
 
 }

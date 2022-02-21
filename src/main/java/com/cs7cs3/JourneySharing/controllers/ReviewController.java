@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.transaction.Transactional;
+
 @RestController
 @RequestMapping("/review")
 public class ReviewController {
@@ -29,7 +31,7 @@ public class ReviewController {
 
   @GetMapping("/{id}")
   public Response<UserReview> get(@PathVariable("id") String id, @RequestParam("token") String token) {
-    if (Utils.validateToken(token)) {
+    if (!Utils.validateToken(token)) {
       return Response.makeError("token validation failed");
     }
 
@@ -42,6 +44,7 @@ public class ReviewController {
   }
 
   @PostMapping("/create")
+  @Transactional
   public Response<UserReview> createReview(@RequestBody Request<CreateReviewRequest> req) {
     logger.info(req.toString());
 
@@ -49,7 +52,7 @@ public class ReviewController {
       return Response.makeError("request validation failed");
     }
 
-    if (Utils.validateToken(req.token)) {
+    if (!Utils.validateToken(req.token)) {
       logger.error("?");
       return Response.makeError("token validation failed");
     }
@@ -64,8 +67,10 @@ public class ReviewController {
       return Response.makeError("payload validation failed");
     }
 
-    var review = UserReview.make(payload.revieweeId, payload.rating, payload.content);
+    var review = UserReview.make( payload.userId,payload.revieweeId, payload.rating, payload.content);
+    System.out.println(review);
     repository.save(review);
+//    repository.insert(payload.reviewId,payload.userId, payload.rating, payload.content,payload.anonymous, payload.getRevieweeId());
 
     return Response.makeResponse(Utils.nextToken(req.token), review);
   }

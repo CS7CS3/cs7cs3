@@ -3,15 +3,13 @@ package com.cs7cs3.JourneySharing.controllers;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 import com.cs7cs3.JourneySharing.db.JourneyRepository;
 import com.cs7cs3.JourneySharing.entities.Journey;
 import com.cs7cs3.JourneySharing.entities.Location;
 import com.cs7cs3.JourneySharing.entities.base.Empty;
-import com.cs7cs3.JourneySharing.entities.request.CreateJourneyRequest;
-import com.cs7cs3.JourneySharing.entities.request.ExitJourneyRequest;
-import com.cs7cs3.JourneySharing.entities.request.JoinJourneyRequest;
-import com.cs7cs3.JourneySharing.entities.request.Request;
+import com.cs7cs3.JourneySharing.entities.request.*;
 import com.cs7cs3.JourneySharing.entities.response.Response;
 import com.cs7cs3.JourneySharing.utils.Utils;
 
@@ -26,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.transaction.Transactional;
 
 @RestController
 @RequestMapping("/journey")
@@ -186,5 +186,89 @@ public class JourneyController {
 
     return Response.makeResponse(Utils.nextToken(req.token));
   }
+
+  @PostMapping("{id}/update1")
+  // id: journeyId
+  @Transactional
+  public Response<Empty> updateJourneyStatus1(@PathVariable("id") String id,  @RequestBody Request<Empty> req){
+    logger.info(req.toString());
+    if (!req.validate()) {
+      logger.error("?");
+      return Response.makeResponse(false, "?", "", Optional.empty());
+    }
+
+    // empty payload, early reject
+    if (!req.payload.isPresent()) {
+      logger.error("?");
+      return Response.makeResponse(false, "?", "", Optional.empty());
+    }
+
+    if (/* var token = req.token; validate(token) */ false) {
+      logger.error("?");
+      return Response.makeResponse(false, "?", "", Optional.empty());
+    }
+
+    // schema validation
+    if (!req.payload.get().validate()) {
+      logger.error("?");
+      return Response.makeResponse(false, "?", "", Optional.empty());
+    }
+
+    var check_endtime = journeyRepository.findById(id);
+    long time1 = check_endtime.get().createdTime;
+    var time3 = System.currentTimeMillis() / 1000;
+    var s = check_endtime.get().status;
+    if (time1 +1200 < time3 && !s.equals(Journey.JourneyStatus.End)) {
+      check_endtime.get().status = Journey.JourneyStatus.End;
+      journeyRepository.save(check_endtime.get());
+      System.out.println("Update");
+      return Response.makeResponse("token");
+    }
+    else {
+      System.out.println("F");
+    }
+    return Response.makeResponse("token");
+  }
+
+  @PostMapping("{id}/update2")
+  @Transactional
+  //id:journey id
+  public Response<Empty> updateJourneyStatus2(@PathVariable("id") String id,  @RequestBody Request<JourneyStatusRequest> req) {
+
+    var payload = req.payload.get();
+    var res = journeyRepository.findById(id);
+    var journey = res.get();
+    var userId = payload.userId;
+
+    for (int i = 0; i < journey.members.size(); i++) {
+      var journeyMember = journey.members.get(i);
+      var u = journeyMember.userId;
+      if( u.equals(userId)){
+//        journeyMember.status = Journey.MemberStatus.Arrived;
+//        journeyRepository.save(journey);
+        journeyRepository.update1(userId);
+
+      }
+    }
+
+    for (int i = 0; i < journey.members.size(); i++) {
+      var journeyMember = journey.members.get(i);
+      var s = journeyMember.status;
+      if (!s.equals(Journey.MemberStatus.Arrived)){
+        System.out.println(Journey.MemberStatus.Arrived);
+        System.out.println(s);
+        System.out.println("F");
+        break;
+      }
+      else {
+        journey.status = Journey.JourneyStatus.End;
+        System.out.println("End");
+      }
+    }
+    journeyRepository.save(journey);
+
+    return Response.makeResponse("token");
+  }
+
 
 }

@@ -28,4 +28,8 @@ public interface JourneyRepository extends JpaRepository<Journey, String> {
 
   @Query(value = "SELECT * FROM cs7cs3.journey WHERE end_time = -1", nativeQuery = true)
   public List<Journey> findAvailableJourneys();
+
+  @Modifying
+  @Query(value = "UPDATE cs7cs3.journey_members SET journey_members.status = 3 WHERE user_id = :jid", nativeQuery = true)
+  public void update1(@Param("jid") String jid);
 }
