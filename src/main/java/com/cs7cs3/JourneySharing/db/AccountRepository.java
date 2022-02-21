@@ -12,24 +12,18 @@ public interface AccountRepository extends JpaRepository<Account, String> {
   public int exist(@Param("username") String username);
 
   @Query(value = """
-      SELECT
-        CASE
-            WHEN
-                COUNT(*) > 0
-                    && password = :password
-            THEN
-                TRUE
-            ELSE FALSE
-        END AS Result
-      FROM
-        `cs7cs3`.`account`
-      WHERE
-        id = (SELECT
-                id
-            FROM
-                `cs7cs3`.`user_info`
-            WHERE
-                username = :username)
+SELECT
+    (COUNT(*) > 0) AS Result
+FROM
+    `cs7cs3`.`account`
+WHERE
+    id = (SELECT
+            id
+        FROM
+            `cs7cs3`.`user_info`
+        WHERE
+            username = :username)
+        AND password = :password
       """, nativeQuery = true)
   public int testPassword(@Param("username") String username, @Param("password") String password);
 }
