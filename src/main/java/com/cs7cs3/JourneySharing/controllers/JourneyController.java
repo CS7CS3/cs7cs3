@@ -193,25 +193,21 @@ public class JourneyController {
   public Response<Empty> updateJourneyStatus1(@PathVariable("id") String id,  @RequestBody Request<Empty> req){
     logger.info(req.toString());
     if (!req.validate()) {
-      logger.error("?");
-      return Response.makeResponse(false, "?", "", Optional.empty());
+      return Response.makeError("request validation failed");
+    }
+
+    if (!Utils.validateToken(req.token)) {
+      return Response.makeError("token validation failed");
     }
 
     // empty payload, early reject
     if (!req.payload.isPresent()) {
-      logger.error("?");
-      return Response.makeResponse(false, "?", "", Optional.empty());
-    }
-
-    if (/* var token = req.token; validate(token) */ false) {
-      logger.error("?");
-      return Response.makeResponse(false, "?", "", Optional.empty());
+      return Response.makeError("empty payload");
     }
 
     // schema validation
     if (!req.payload.get().validate()) {
-      logger.error("?");
-      return Response.makeResponse(false, "?", "", Optional.empty());
+      return Response.makeError("payload schema validation failed");
     }
 
     var check_endtime = journeyRepository.findById(id);
@@ -222,12 +218,12 @@ public class JourneyController {
       check_endtime.get().status = Journey.JourneyStatus.End;
       journeyRepository.save(check_endtime.get());
       System.out.println("Update");
-      return Response.makeResponse("token");
+//      return Response.makeResponse(Utils.nextToken(req.token));
     }
     else {
       System.out.println("F");
     }
-    return Response.makeResponse("token");
+    return Response.makeResponse(Utils.nextToken(req.token));
   }
 
   @PostMapping("{id}/update2")
@@ -235,7 +231,27 @@ public class JourneyController {
   //id:journey id
   public Response<Empty> updateJourneyStatus2(@PathVariable("id") String id,  @RequestBody Request<JourneyStatusRequest> req) {
 
+    logger.info(req.toString());
+    if (!req.validate()) {
+      return Response.makeError("request validation failed");
+    }
+
+    if (!Utils.validateToken(req.token)) {
+      return Response.makeError("token validation failed");
+    }
+
+    // empty payload, early reject
+    if (!req.payload.isPresent()) {
+      return Response.makeError("empty payload");
+    }
+
+
     var payload = req.payload.get();
+    // schema validation
+    if (!payload.validate()) {
+      return Response.makeError("payload schema validation failed");
+    }
+
     var res = journeyRepository.findById(id);
     var journey = res.get();
     var userId = payload.userId;
@@ -267,7 +283,7 @@ public class JourneyController {
     }
     journeyRepository.save(journey);
 
-    return Response.makeResponse("token");
+    return Response.makeResponse(Utils.nextToken(req.token));
   }
 
 
