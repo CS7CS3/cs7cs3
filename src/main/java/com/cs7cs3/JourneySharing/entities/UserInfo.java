@@ -2,6 +2,7 @@ package com.cs7cs3.JourneySharing.entities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -27,6 +28,18 @@ public class UserInfo extends Validatable {
 
     return userInfo;
   }
+
+  public static UserInfo make2(String id, String username,String avatarUrl,String boi) {
+    UserInfo userInfo = new UserInfo();
+
+    userInfo.id = id;
+    userInfo.username = username;
+    userInfo.avatarUrl = avatarUrl;
+    userInfo.bio = boi;
+
+    return userInfo;
+  }
+
 
   @Id
   public String id = "";

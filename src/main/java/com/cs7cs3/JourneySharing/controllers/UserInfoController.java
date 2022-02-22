@@ -112,12 +112,17 @@ package com.cs7cs3.JourneySharing.controllers;// package com.cs7cs3.JourneyShari
 
 import com.cs7cs3.JourneySharing.db.UserInfoRepository;
 import com.cs7cs3.JourneySharing.entities.UserInfo;
+import com.cs7cs3.JourneySharing.entities.request.Request;
+import com.cs7cs3.JourneySharing.entities.request.UpdateUserInfoRequest;
 import com.cs7cs3.JourneySharing.entities.response.Response;
 import com.cs7cs3.JourneySharing.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.transaction.Transactional;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/user_info")
@@ -142,6 +147,66 @@ public class UserInfoController {
         }
 
         return Response.makeResponse(Utils.nextToken(token), res.get());
+
+    }
+
+    @GetMapping("/{id}/ava")
+    public Response<String> getAva(@PathVariable("id")String id, @RequestParam("token") String token){
+
+        if (!Utils.validateToken(token)) {
+            return Response.makeError("token validation failed");
+        }
+
+        var res = repository.findById(id);
+
+        System.out.println(res);
+
+        if (!res.isPresent()) {
+            return Response.makeError("user does not exist");
+        }
+
+        else {
+            var ava = res.get().avatarUrl;
+            return Response.makeResponse(Utils.nextToken(token), ava);
+
+        }
+
+    }
+
+    @PostMapping("/update/{id}")
+    //id: userId   update: without password
+    @Transactional
+    public Response<UserInfo> updateUserInfo(@PathVariable String id, @RequestBody Request<UpdateUserInfoRequest> req){
+        logger.info(req.toString());
+
+        if (!req.validate()) {
+            return Response.makeError("request validation failed");
+        }
+
+        if (!Utils.validateToken(req.token)) {
+            logger.error("?");
+            return Response.makeError("token validation failed");
+        }
+
+        if (!req.payload.isPresent()) {
+            return Response.makeError("payload does not exist");
+        }
+
+        var payload = req.payload.get();
+
+        if (!payload.validate()) {
+            return Response.makeError("payload validation failed");
+        }
+
+        var un = payload.username;
+        var ava = payload.avatarUrl;
+        var b = payload.boi;
+        var userinfo = UserInfo.make2(id,un,ava,b);
+
+        System.out.println(userinfo);
+        repository.save(userinfo);
+
+        return Response.makeResponse(Utils.nextToken(req.token), userinfo);
 
     }
 
