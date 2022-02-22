@@ -166,9 +166,11 @@ public class UserInfoController {
         }
 
         else {
+
+            // base64 validation
+
             var ava = res.get().avatarUrl;
             return Response.makeResponse(Utils.nextToken(token), ava);
-
         }
 
     }
