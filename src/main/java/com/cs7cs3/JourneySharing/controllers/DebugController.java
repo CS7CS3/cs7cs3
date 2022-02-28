@@ -20,7 +20,6 @@ public class DebugController {
   @GetMapping
   Request<ExitJourneyResponse> test(@RequestBody Request<ExitJourneyRequest> req) {
     logger.info(req.toString());
-    // var req = Request.make("token", 0, ExitJourneyResponse.make());
     return null;
   }
 
