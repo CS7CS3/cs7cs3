@@ -2,7 +2,6 @@ package com.cs7cs3.JourneySharing.entities;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -11,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.cs7cs3.JourneySharing.entities.base.validator.Validatable;
-import com.cs7cs3.JourneySharing.entities.request.RegisterRequest;
+import com.cs7cs3.JourneySharing.entities.messages.RegisterRequest;
 
 import lombok.Data;
 
@@ -29,7 +28,7 @@ public class UserInfo extends Validatable {
     return userInfo;
   }
 
-  public static UserInfo make2(String id, String username,String avatarUrl,String boi) {
+  public static UserInfo make2(String id, String username, String avatarUrl, String boi) {
     UserInfo userInfo = new UserInfo();
 
     userInfo.id = id;
@@ -40,7 +39,6 @@ public class UserInfo extends Validatable {
     return userInfo;
   }
 
-
   @Id
   public String id = "";
   public String username = "";
@@ -48,14 +46,11 @@ public class UserInfo extends Validatable {
   public String bio = "";
   public double rating = 0.0;
 
-  // 表示用户当前的状态
-  public Journey.MemberStatus status = Journey.MemberStatus.NotInAGroup;
+  @ElementCollection
+  @Column(name = "review_id")
+  public List<String> reviews = new ArrayList<String>();
 
-//  @ElementCollection
-//  @Column(name = "review_id")
-//  public List<String> reviews = new ArrayList<String>();
-//
-//  @ElementCollection
-//  @Column(name = "journey_id")
-//  public List<String> histories = new ArrayList<String>();
+  @ElementCollection
+  @Column(name = "journey_id")
+  public List<String> histories = new ArrayList<String>();
 }

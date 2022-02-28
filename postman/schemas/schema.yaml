@@ -8,7 +8,7 @@ servers:
   - url: localhost:3000
 paths:
   "/login":
-    description: ""
+    description: "require username, password and timestamp"
     post:
       requestBody:
         content:
@@ -37,69 +37,37 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/RegisterResponse"
-  "/journey":
+
+  "/journey/get-by-id":
     description: ""
-    get:
-      parameters:
-        - name: token
-          in: query
-          required: true
-          schema:
-            "$ref": "#/components/schemas/Token"
-        - name: from_latitude
-          in: query
-          required: true
-          schema:
-            type: number
-        - name: to_latitude
-          in: query
-          required: true
-          schema:
-            type: number
-        - name: from_longitude
-          in: query
-          required: true
-          schema:
-            type: number
-        - name: to_longitude
-          in: query
-          required: true
-          schema:
-            type: number
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/GetJourneyByIdRequest"
       responses:
         "200":
           description: ""
           content:
             application/json:
               schema:
-                type: array
-                minItems: 1
-                items:
-                  "$ref": "#/components/schemas/Journey"
-  "/journey/{id}":
+                "$ref": "#/components/schemas/GetJourneyByIdResponse"
+  "/journey/get-by-location":
     description: ""
-    get:
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            "$ref": "#/components/schemas/UserId"
-        - in: query
-          name: token
-          required: true
-          schema:
-            "$ref": "#/components/schemas/Token"
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/GetJourneyByLocationRequest"
       responses:
         "200":
           description: ""
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/LoginRequest"
-                properties:
-                  payload:
-                    type: object
+                "$ref": "#/components/schemas/GetJourneyByLocationResponse"
   "/journey/create":
     description: ""
     post:
@@ -145,14 +113,16 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/ExitJourneyResponse"
+
 components:
   schemas:
+    Username:
+      type: string
     UUID:
       type: string
       format: uuid
     UserId:
-      type: string
-      pattern: "^[A-Za-z_][A-Za-z0-9_]{8,30}$"
+      "$ref": "#/components/schemas/UUID"
     JourneyId:
       "$ref": "#/components/schemas/UUID"
     ReviewId:
@@ -185,7 +155,7 @@ components:
       enum: [Waiting, Start, End]
     JourneyMemberStatus:
       type: string
-      enum: [Waiting, Travelling, Arrived]
+      enum: [NoInGroup, Waiting, Travelling]
     Journey:
       type: object
       properties:
@@ -291,15 +261,18 @@ components:
           type: boolean
         rating:
           "$ref": "#/components/schemas/Rating"
+
+    # Login/Register Definitions
     LoginRequest:
       type: object
       properties:
-        userId:
-          "$ref": "#/components/schemas/UserId"
+        username:
+          "$ref": "#/components/schemas/Username"
         password:
           "$ref": "#/components/schemas/Password"
         timestamp:
           "$ref": "#/components/schemas/Timestamp"
+      required: ["username", "password", "timestamp"]
     LoginResponse:
       type: object
       properties:
@@ -309,15 +282,18 @@ components:
           type: string
         token:
           "$ref": "#/components/schemas/Token"
+      required: ["success", "reason", "token"]
+
     RegisterRequest:
       type: object
       properties:
-        userId:
-          "$ref": "#/components/schemas/UserId"
+        username:
+          "$ref": "#/components/schemas/Username"
         password:
           "$ref": "#/components/schemas/Password"
         timestamp:
           "$ref": "#/components/schemas/Timestamp"
+      required: ["username", "password", "timestamp"]
     RegisterResponse:
       type: object
       properties:
@@ -325,15 +301,85 @@ components:
           type: boolean
         reason:
           type: string
+      required: ["success", "reason", "token"]
+
+    # Journey Definitions
+    GetJourneyByIdRequest:
+      type: object
+      properties:
+        token:
+          "$ref": "#/components/schemas/Token"
+        timestamp:
+          "$ref": "#/components/schemas/Timestamp"
+        payload:
+          type: object
+          properties:
+            journeyId:
+              "$ref": "#/components/schemas/JourneyId"
+          required: ["journeyId"]
+      required: ["token", "timestamp", "payload"]
+    GetJourneyByIdResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        reason:
+          type: string
+        token:
+          "$ref": "#/components/schemas/Token"
+        payload:
+          "$ref": "#/components/schemas/Journey"
+      required: ["success", "reason", "token", "payload"]
+
+    GetJourneyByLocationRequest:
+      type: object
+      properties:
+        token:
+          "$ref": "#/components/schemas/Token"
+        timestamp:
+          "$ref": "#/components/schemas/Timestamp"
+        payload:
+          type: object
+          properties:
+            from:
+              "$ref": "#/components/schemas/Location"
+            to:
+              "$ref": "#/components/schemas/Location"
+          required: ["from", "to"]
+      required: ["token", "timestamp", "payload"]
+    GetJourneyByLocationResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        reason:
+          type: string
+        token:
+          "$ref": "#/components/schemas/Token"
+        payload:
+          type: array
+          items:
+            "$ref": "#/components/schemas/Journey"
+      required: ["success", "reason", "token", "payload"]
+
     CreateJourneyRequest:
       type: object
       properties:
-        userId:
-          "$ref": "#/components/schemas/UserId"
-        from:
-          "$ref": "#/components/schemas/Location"
-        to:
-          "$ref": "#/components/schemas/Location"
+        token:
+          "$ref": "#/components/schemas/Token"
+        timestamp:
+          "$ref": "#/components/schemas/Timestamp"
+        payload:
+          type: object
+          properties:
+            userId:
+              "$ref": "#/components/schemas/UserId"
+            from:
+              "$ref": "#/components/schemas/Location"
+            to:
+              "$ref": "#/components/schemas/Location"
+          required: ["userId", "from", "to"]
+      required: ["token", "timestamp", "payload"]
     CreateJourneyResponse:
       type: object
       properties:
@@ -345,13 +391,24 @@ components:
           "$ref": "#/components/schemas/Token"
         payload:
           "$ref": "#/components/schemas/Journey"
+      required: ["success", "reason", "token", "payload"]
+
     JoinJourneyRequest:
       type: object
       properties:
-        userId:
-          "$ref": "#/components/schemas/UserId"
-        journeyId:
-          "$ref": "#/components/schemas/Journey"
+        token:
+          "$ref": "#/components/schemas/Token"
+        timestamp:
+          "$ref": "#/components/schemas/Timestamp"
+        payload:
+          type: object
+          properties:
+            userId:
+              "$ref": "#/components/schemas/UserId"
+            journeyId:
+              "$ref": "#/components/schemas/JourneyId"
+          required: ["userId", "journeyId"]
+      required: ["token", "timestamp", "paylaod"]
     JoinJourneyResponse:
       type: object
       properties:
@@ -361,13 +418,24 @@ components:
           type: string
         token:
           "$ref": "#/components/schemas/Token"
+        payload:
+          "$ref": "#/components/schemas/Journey"
+      required: ["success", "reason", "token"]
+
     ExitJourneyRequest:
       type: object
       properties:
-        userId:
-          "$ref": "#/components/schemas/UserId"
-        journeyId:
-          "$ref": "#/components/schemas/Journey"
+        token:
+          "$ref": "#/components/schemas/Token"
+        timestamp:
+          "$ref": "#/components/schemas/Timestamp"
+        payload:
+          type: object
+          properties:
+            userId:
+              "$ref": "#/components/schemas/UserId"
+          required: ["userId"]
+      required: ["token", "timestamp", "payload"]
     ExitJourneyResponse:
       type: object
       properties:
@@ -377,6 +445,8 @@ components:
           type: string
         token:
           "$ref": "#/components/schemas/Token"
+      required: ["success", "reason", "token"]
+
   securitySchemes:
     BasicAuth:
       type: http

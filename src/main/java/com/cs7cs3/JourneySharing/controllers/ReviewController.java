@@ -1,10 +1,12 @@
 package com.cs7cs3.JourneySharing.controllers;
 
+import javax.transaction.Transactional;
+
 import com.cs7cs3.JourneySharing.db.ReviewRepository;
 import com.cs7cs3.JourneySharing.entities.UserReview;
-import com.cs7cs3.JourneySharing.entities.request.CreateReviewRequest;
-import com.cs7cs3.JourneySharing.entities.request.Request;
-import com.cs7cs3.JourneySharing.entities.response.Response;
+import com.cs7cs3.JourneySharing.entities.messages.CreateReviewRequest;
+import com.cs7cs3.JourneySharing.entities.messages.Request;
+import com.cs7cs3.JourneySharing.entities.messages.Response;
 import com.cs7cs3.JourneySharing.utils.Utils;
 
 import org.slf4j.Logger;
@@ -17,8 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.transaction.Transactional;
 
 @RestController
 @RequestMapping("/review")
@@ -40,7 +40,7 @@ public class ReviewController {
       return Response.makeError("review does not exist");
     }
 
-    return Response.makeResponse(Utils.nextToken(token), res.get());
+    return Response.make(Utils.nextToken(token), res.get());
   }
 
   @PostMapping("/create")
@@ -72,7 +72,7 @@ public class ReviewController {
     repository.save(review);
 //    repository.insert(payload.reviewId,payload.userId, payload.rating, payload.content,payload.anonymous, payload.getRevieweeId());
 
-    return Response.makeResponse(Utils.nextToken(req.token), review);
+    return Response.make(Utils.nextToken(req.token), review);
   }
 
 }

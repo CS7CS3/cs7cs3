@@ -4,10 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import javax.persistence.*;
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 import com.cs7cs3.JourneySharing.entities.base.validator.Validatable;
-import com.cs7cs3.JourneySharing.entities.request.CreateJourneyRequest;
+import com.cs7cs3.JourneySharing.entities.messages.journey.CreateJourneyRequest;
 
 import lombok.Data;
 import lombok.NonNull;
@@ -26,8 +34,7 @@ public class Journey extends Validatable {
 
     journey.from = from;
     journey.to = to;
-//    journey.members.add(userId);
-    journey.members.add(JourneyMember.make(userId,MemberStatus.Waiting));
+    journey.members.add(JourneyMember.make(userId, UserStatus.Waiting));
 
     journey.host = userId;
 
@@ -43,36 +50,53 @@ public class Journey extends Validatable {
 
     journey.from = req.from;
     journey.to = req.to;
-//    journey.members.add(req.userId);
-    journey.members.add(JourneyMember.make(req.userId,MemberStatus.Waiting));
+    // journey.members.add(req.userId);
+    journey.members.add(JourneyMember.make(req.userId, UserStatus.Waiting));
     journey.host = req.userId;
-
 
     return journey;
   }
 
-  //不该是静态吧
+  // 不该是静态吧
   public enum JourneyStatus {
-    Waiting, Start, End
+    Waiting, Travelling, End;
+
+    private static JourneyStatus[] values = null;
+
+    public static JourneyStatus cast(int i) {
+      if (values == null) {
+        values = JourneyStatus.values();
+      }
+      return values[i];
+    }
   }
 
   // 不知道表示了什么，不该出现在这里
-  public enum MemberStatus {
-    NotInAGroup, Waiting, Travelling, Arrived
+  public enum UserStatus {
+    PendingApproval, Waiting, Travelling, Arrived;
+
+    private static UserStatus[] values = null;
+
+    public static UserStatus cast(int i) {
+      if (values == null) {
+        values = UserStatus.values();
+      }
+      return values[i];
+    }
   }
 
   @Embeddable
-  public static class JourneyMember{
-    public static JourneyMember make (String userId, MemberStatus status){
+  public static class JourneyMember {
+    public static JourneyMember make(String userId, UserStatus status) {
       var journeyMember = new JourneyMember();
       journeyMember.userId = userId;
       journeyMember.status = status;
 
-      return  journeyMember;
+      return journeyMember;
     }
 
     public String userId;
-    public MemberStatus status = MemberStatus.Waiting;
+    public UserStatus status = UserStatus.Waiting;
   }
 
   @Id
@@ -103,9 +127,9 @@ public class Journey extends Validatable {
   public String host = "";
 
   @ElementCollection
-//  @Column(name = "user_id")
-//  public List<String> members = new ArrayList<String>();
-//  @Embedded
+  // @Column(name = "user_id")
+  // public List<String> members = new ArrayList<String>();
+  // @Embedded
   public List<JourneyMember> members = new ArrayList<JourneyMember>();
 
 }
