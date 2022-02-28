@@ -1,4 +1,4 @@
-package com.cs7cs3.JourneySharing.entities;
+package com.cs7cs3.JourneySharing.entities.messages;
 
 import java.util.Optional;
 
@@ -11,22 +11,32 @@ import lombok.Data;
 @Data
 @JsonInclude(Include.NON_EMPTY)
 public class Response<T> extends Validatable {
-  public static <U> Response<U> makeResponse(String token) {
-    Response<U> resp = new Response<U>(true, "", token, Optional.empty());
+  public static <U> Response<U> makeError(String reason) {
+    Response<U> resp = new Response<U>(false, reason, null, Optional.empty());
     return resp;
   }
 
-  public static <U> Response<U> makeResponse(String token, U u) {
-    Response<U> resp = new Response<U>(true, "", token, u);
+  public static <U> Response<U> make(String token) {
+    Response<U> resp = new Response<U>(true, null, token, Optional.empty());
     return resp;
   }
 
-  public static <U> Response<U> makeResponse(boolean success, String reason, String token, U u) {
+  public static <U> Response<U> make(String token, U u) {
+    Response<U> resp = new Response<U>(true, null, token, u);
+    return resp;
+  }
+
+  public static <U> Response<U> make(String token, Optional<U> u) {
+    Response<U> resp = new Response<U>(true, null, token, u);
+    return resp;
+  }
+
+  public static <U> Response<U> make(boolean success, String reason, String token, U u) {
     Response<U> resp = new Response<U>(success, reason, token, u);
     return resp;
   }
 
-  public static <U> Response<U> makeResponse(boolean success, String reason, String token, Optional<U> u) {
+  public static <U> Response<U> make(boolean success, String reason, String token, Optional<U> u) {
     Response<U> resp = new Response<U>(success, reason, token, u);
     return resp;
   }
