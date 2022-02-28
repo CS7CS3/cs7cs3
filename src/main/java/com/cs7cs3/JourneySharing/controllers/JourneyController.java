@@ -24,8 +24,8 @@ import com.cs7cs3.JourneySharing.entities.messages.journey.GetJourneyByLocationR
 import com.cs7cs3.JourneySharing.entities.messages.journey.GetJourneyByLocationResponse;
 import com.cs7cs3.JourneySharing.entities.messages.journey.JoinJourneyRequest;
 import com.cs7cs3.JourneySharing.entities.messages.journey.JoinJourneyResponse;
-import com.cs7cs3.JourneySharing.entities.messages.journey.StartRequest;
-import com.cs7cs3.JourneySharing.entities.messages.journey.StartResponse;
+import com.cs7cs3.JourneySharing.entities.messages.journey.StartJourneyRequest;
+import com.cs7cs3.JourneySharing.entities.messages.journey.StartJourneyResponse;
 import com.cs7cs3.JourneySharing.utils.Utils;
 
 import org.slf4j.Logger;
@@ -113,7 +113,7 @@ public class JourneyController {
   }
 
   @PostMapping("/start")
-  public Response<StartResponse> start(@RequestBody Request<StartRequest> req) {
+  public Response<StartJourneyResponse> start(@RequestBody Request<StartJourneyRequest> req) {
     var res = req.test();
     if (res.right.isPresent()) {
       return Response.makeError(res.right.get());
@@ -134,7 +134,7 @@ public class JourneyController {
       journeyRepository.setJourneyStatus(journeyId, JourneyStatus.Travelling);
     }
 
-    return Response.make(Utils.nextToken(req.token), StartResponse.make());
+    return Response.make(Utils.nextToken(req.token), StartJourneyResponse.make());
   }
 
   @PostMapping("/join")

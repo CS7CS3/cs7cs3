@@ -304,6 +304,110 @@ components:
       required: ["success", "reason", "token"]
 
     # Journey Definitions
+    ApproveJoinRequest:
+      type: object
+      properties:
+        token:
+          "$ref": "#/components/schemas/Token"
+        timestamp:
+          "$ref": "#/components/schemas/Timestamp"
+        payload:
+          type: object
+          properties:
+            userId:
+              "$ref": "#/components/schemas/UserId"
+          required: ["userId"]
+      required: ["token", "timestamp", "payload"]
+    ApproveJoinResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        reason:
+          type: string
+        token:
+          "$ref": "#/components/schemas/Token"
+
+    ConfirmArriveRequest:
+      type: object
+      properties:
+        token:
+          "$ref": "#/components/schemas/Token"
+        timestamp:
+          "$ref": "#/components/schemas/Timestamp"
+        payload:
+          type: object
+          properties:
+            userId:
+              "$ref": "#/components/schemas/UserId"
+          required: ["userId"]
+      required: ["token", "timestamp", "payload"]
+    ConfirmArriveResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        reason:
+          type: string
+        token:
+          "$ref": "#/components/schemas/Token"
+
+    CreateJourneyRequest:
+      type: object
+      properties:
+        token:
+          "$ref": "#/components/schemas/Token"
+        timestamp:
+          "$ref": "#/components/schemas/Timestamp"
+        payload:
+          type: object
+          properties:
+            userId:
+              "$ref": "#/components/schemas/UserId"
+            from:
+              "$ref": "#/components/schemas/Location"
+            to:
+              "$ref": "#/components/schemas/Location"
+          required: ["userId", "from", "to"]
+      required: ["token", "timestamp", "payload"]
+    CreateJourneyResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        reason:
+          type: string
+        token:
+          "$ref": "#/components/schemas/Token"
+        payload:
+          "$ref": "#/components/schemas/Journey"
+      required: ["success", "reason", "token", "payload"]
+
+    ExitJourneyRequest:
+      type: object
+      properties:
+        token:
+          "$ref": "#/components/schemas/Token"
+        timestamp:
+          "$ref": "#/components/schemas/Timestamp"
+        payload:
+          type: object
+          properties:
+            userId:
+              "$ref": "#/components/schemas/UserId"
+          required: ["userId"]
+      required: ["token", "timestamp", "payload"]
+    ExitJourneyResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        reason:
+          type: string
+        token:
+          "$ref": "#/components/schemas/Token"
+      required: ["success", "reason", "token"]
+
     GetJourneyByIdRequest:
       type: object
       properties:
@@ -362,37 +466,6 @@ components:
             "$ref": "#/components/schemas/Journey"
       required: ["success", "reason", "token", "payload"]
 
-    CreateJourneyRequest:
-      type: object
-      properties:
-        token:
-          "$ref": "#/components/schemas/Token"
-        timestamp:
-          "$ref": "#/components/schemas/Timestamp"
-        payload:
-          type: object
-          properties:
-            userId:
-              "$ref": "#/components/schemas/UserId"
-            from:
-              "$ref": "#/components/schemas/Location"
-            to:
-              "$ref": "#/components/schemas/Location"
-          required: ["userId", "from", "to"]
-      required: ["token", "timestamp", "payload"]
-    CreateJourneyResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-        reason:
-          type: string
-        token:
-          "$ref": "#/components/schemas/Token"
-        payload:
-          "$ref": "#/components/schemas/Journey"
-      required: ["success", "reason", "token", "payload"]
-
     JoinJourneyRequest:
       type: object
       properties:
@@ -422,7 +495,7 @@ components:
           "$ref": "#/components/schemas/Journey"
       required: ["success", "reason", "token"]
 
-    ExitJourneyRequest:
+    StartJourenyRequest:
       type: object
       properties:
         token:
@@ -432,20 +505,12 @@ components:
         payload:
           type: object
           properties:
-            userId:
+            hostId:
               "$ref": "#/components/schemas/UserId"
-          required: ["userId"]
-      required: ["token", "timestamp", "payload"]
-    ExitJourneyResponse:
+          required: ["hostId"]
+      required: ["token", "timestamp", "paylaod"]
+    StartJourenyResponse:
       type: object
-      properties:
-        success:
-          type: boolean
-        reason:
-          type: string
-        token:
-          "$ref": "#/components/schemas/Token"
-      required: ["success", "reason", "token"]
 
   securitySchemes:
     BasicAuth:
