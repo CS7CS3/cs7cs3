@@ -47,6 +47,98 @@ public class JourneyController {
   @Autowired
   private JourneyRepository journeyRepository;
 
+  @PostMapping("/approve-join")
+  public Response<ApproveJoinResponse> approveJoin(@RequestBody Request<ApproveJoinRequest> req) {
+    var res = req.test();
+    if (res.right.isPresent()) {
+      return Response.makeError(res.right.get());
+    }
+    var payload = res.left;
+
+    var status = journeyRepository.getUserStatusByUserId(payload.userId);
+    if (status != UserStatus.PendingApproval) {
+      Response.makeError("user is already in this group");
+    }
+
+    journeyRepository.setUserStatus(payload.userId, UserStatus.Waiting.ordinal());
+
+    return Response.make(Utils.nextToken(req.token), ApproveJoinResponse.make());
+  }
+
+  @PostMapping("/confirm-arrive")
+  public Response<ConfirmArriveResponse> confirmArrive(@RequestBody Request<ConfirmArriveRequest> req) {
+    var res = req.test();
+    if (res.right.isPresent()) {
+      return Response.makeError(res.right.get());
+    }
+    var payload = res.left;
+
+    var status = journeyRepository.getUserStatusByUserId(payload.userId);
+    if (status != UserStatus.Travelling) {
+      Response.makeError("user does not in travelling, cannot 'arrive'");
+    }
+
+    journeyRepository.setUserStatus(payload.userId, UserStatus.Arrived.ordinal());
+
+    var journeyId = journeyRepository.getJourneyIdByUserId(payload.userId);
+    var allUserStatus = journeyRepository.getUserStatusByJourneyId(journeyId);
+    boolean allArrived = true;
+    for (UserStatus _status : allUserStatus) {
+      if (_status != UserStatus.Arrived) {
+        allArrived = false;
+        break;
+      }
+    }
+
+    if (allArrived) {
+      journeyRepository.setJourneyStatus(journeyId, JourneyStatus.End.ordinal());
+    }
+
+    return Response.make(Utils.nextToken(req.token), ConfirmArriveResponse.make());
+  }
+
+  @PostMapping("/create")
+  public Response<CreateJourneyResponse> create(@RequestBody Request<CreateJourneyRequest> req) {
+    var res = req.test();
+    if (res.right.isPresent()) {
+      return Response.makeError(res.right.get());
+    }
+    var payload = res.left;
+
+    var journey = Journey.make(payload);
+    try {
+      journeyRepository.save(journey);
+    } catch (DataIntegrityViolationException e) {
+      return Response.makeError("user id does not exist");
+    }
+
+    return Response.make(Utils.nextToken(req.token), CreateJourneyResponse.make(journey));
+  }
+
+  @PostMapping("/exit")
+  public Response<ExitJourneyResponse> exit(@RequestBody Request<ExitJourneyRequest> req) {
+    var res = req.test();
+    if (res.right.isPresent()) {
+      return Response.makeError(res.right.get());
+    }
+    var payload = res.left;
+
+    JourneyStatus status = journeyRepository.getJourneyStatusByUserId(payload.userId);
+    if (status != JourneyStatus.Waiting) {
+      return Response.makeError("journey already start, cannot exit");
+    }
+
+    try {
+      if (!(journeyRepository.exit(payload.userId) > 0)) {
+        return Response.makeError("unknown error");
+      }
+    } catch (DataIntegrityViolationException e) {
+      return Response.makeError("journey/user id inconsistency");
+    }
+
+    return Response.make(Utils.nextToken(req.token), ExitJourneyResponse.make());
+  }
+
   @PostMapping("/get-by-id")
   public Response<GetJourneyByIdResponse> getById(@RequestBody Request<GetJourneyByIdRequest> req) {
     var testRes = req.test();
@@ -94,49 +186,6 @@ public class JourneyController {
     return Response.make(Utils.nextToken(req.token), GetJourneyByLocationResponse.make(journeys));
   }
 
-  @PostMapping("/create")
-  public Response<CreateJourneyResponse> create(@RequestBody Request<CreateJourneyRequest> req) {
-    var res = req.test();
-    if (res.right.isPresent()) {
-      return Response.makeError(res.right.get());
-    }
-    var payload = res.left;
-
-    var journey = Journey.make(payload);
-    try {
-      journeyRepository.save(journey);
-    } catch (DataIntegrityViolationException e) {
-      return Response.makeError("user id does not exist");
-    }
-
-    return Response.make(Utils.nextToken(req.token), CreateJourneyResponse.make(journey));
-  }
-
-  @PostMapping("/start")
-  public Response<StartJourneyResponse> start(@RequestBody Request<StartJourneyRequest> req) {
-    var res = req.test();
-    if (res.right.isPresent()) {
-      return Response.makeError(res.right.get());
-    }
-    var payload = res.left;
-
-    var journeyId = journeyRepository.getJourneyIdByHostId(payload.hostId);
-    var allUserStatus = journeyRepository.getUserStatusByJourneyId(journeyId);
-    boolean noPendingApproval = true;
-    for (UserStatus _status : allUserStatus) {
-      if (_status == UserStatus.PendingApproval) {
-        noPendingApproval = false;
-        break;
-      }
-    }
-
-    if (noPendingApproval) {
-      journeyRepository.setJourneyStatus(journeyId, JourneyStatus.Travelling);
-    }
-
-    return Response.make(Utils.nextToken(req.token), StartJourneyResponse.make());
-  }
-
   @PostMapping("/join")
   public Response<JoinJourneyResponse> join(@RequestBody Request<JoinJourneyRequest> req) {
     var res = req.test();
@@ -146,12 +195,16 @@ public class JourneyController {
     var payload = res.left;
 
     JourneyStatus status = journeyRepository.getJourneyStatusByJourneyId(payload.journeyId);
+    if (status == null) {
+      return Response.makeError("cannot find journey");
+    }
+
     if (status != JourneyStatus.Waiting) {
       return Response.makeError("journey already start, cannot join");
     }
 
     try {
-      if (!(journeyRepository.join(payload.journeyId, payload.userId, UserStatus.PendingApproval) > 0)) {
+      if (!(journeyRepository.join(payload.journeyId, payload.userId, UserStatus.PendingApproval.ordinal()) > 0)) {
         return Response.makeError("unknown error");
       }
     } catch (DataIntegrityViolationException e) {
@@ -166,31 +219,41 @@ public class JourneyController {
     return Response.make(Utils.nextToken(req.token), JoinJourneyResponse.make(journey.get()));
   }
 
-  @PostMapping("/exit")
-  public Response<ExitJourneyResponse> exit(@RequestBody Request<ExitJourneyRequest> req) {
+  @PostMapping("/start")
+  public Response<StartJourneyResponse> start(@RequestBody Request<StartJourneyRequest> req) {
     var res = req.test();
     if (res.right.isPresent()) {
       return Response.makeError(res.right.get());
     }
     var payload = res.left;
 
-    JourneyStatus status = journeyRepository.getJourneyStatusByUserId(payload.userId);
-    if (status != JourneyStatus.Waiting) {
-      return Response.makeError("journey already start, cannot exit");
+    var journeyId = journeyRepository.getJourneyIdByHostId(payload.hostId);
+    if (journeyId == null) {
+      return Response.makeError("cannot find journey");
     }
 
-    try {
-      if (!(journeyRepository.exit(payload.userId) > 0)) {
-        return Response.makeError("unknown error");
+    var allUserStatus = journeyRepository.getUserStatusByJourneyId(journeyId);
+    if (allUserStatus == null) {
+      return Response.makeError("cannot get user status");
+    }
+
+    boolean noPendingApproval = true;
+    for (UserStatus _status : allUserStatus) {
+      if (_status == UserStatus.PendingApproval) {
+        noPendingApproval = false;
+        break;
       }
-    } catch (DataIntegrityViolationException e) {
-      return Response.makeError("journey/user id inconsistency");
     }
 
-    return Response.make(Utils.nextToken(req.token), ExitJourneyResponse.make());
+    if (noPendingApproval) {
+      journeyRepository.setJourneyStatus(journeyId, JourneyStatus.Travelling.ordinal());
+    }
+
+    return Response.make(Utils.nextToken(req.token), StartJourneyResponse.make());
   }
 
   @PostMapping("{id}/update1")
+  @Deprecated
   public Response<Empty> updateJourneyStatus1(@PathVariable("id") String id, @RequestBody Request<Empty> req) {
     logger.info(req.toString());
     if (!req.validate()) {
@@ -224,56 +287,6 @@ public class JourneyController {
       System.out.println("F");
     }
     return Response.make(Utils.nextToken(req.token));
-  }
-
-  @PostMapping("/confirm-arrive")
-  public Response<ConfirmArriveResponse> confirmArrive(@RequestBody Request<ConfirmArriveRequest> req) {
-    var res = req.test();
-    if (res.right.isPresent()) {
-      return Response.makeError(res.right.get());
-    }
-    var payload = res.left;
-
-    var status = journeyRepository.getUserStatusByUserId(payload.userId);
-    if (status != UserStatus.Travelling) {
-      Response.makeError("user does not in travelling, cannot 'arrive'");
-    }
-
-    journeyRepository.setUserStatus(payload.userId, UserStatus.Arrived);
-
-    var journeyId = journeyRepository.getJourneyIdByUserId(payload.userId);
-    var allUserStatus = journeyRepository.getUserStatusByJourneyId(journeyId);
-    boolean allArrived = true;
-    for (UserStatus _status : allUserStatus) {
-      if (_status != UserStatus.Arrived) {
-        allArrived = false;
-        break;
-      }
-    }
-
-    if (allArrived) {
-      journeyRepository.setJourneyStatus(journeyId, JourneyStatus.End);
-    }
-
-    return Response.make(Utils.nextToken(req.token), ConfirmArriveResponse.make());
-  }
-
-  @PostMapping("/approve-join")
-  public Response<ApproveJoinResponse> approveJoin(@RequestBody Request<ApproveJoinRequest> req) {
-    var res = req.test();
-    if (res.right.isPresent()) {
-      return Response.makeError(res.right.get());
-    }
-    var payload = res.left;
-
-    var status = journeyRepository.getUserStatusByUserId(payload.userId);
-    if (status != UserStatus.PendingApproval) {
-      Response.makeError("user is already in this group");
-    }
-
-    journeyRepository.setUserStatus(payload.userId, UserStatus.Waiting);
-
-    return Response.make(Utils.nextToken(req.token), ApproveJoinResponse.make());
   }
 
 }
