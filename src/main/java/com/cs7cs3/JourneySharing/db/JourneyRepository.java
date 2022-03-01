@@ -46,7 +46,7 @@ public interface JourneyRepository extends JpaRepository<Journey, String> {
   @Transactional
   @Query(value = "INSERT INTO `cs7cs3`.`journey_members` (`journey_id`, `user_id`, `status`) VALUES (:journeyId, :userId, :status)", nativeQuery = true)
   public int join(@Param("journeyId") String journeyId, @Param("userId") String userId,
-      @Param("status") UserStatus status);
+      @Param("status") int status);
 
   @Modifying
   @Transactional
@@ -62,12 +62,12 @@ public interface JourneyRepository extends JpaRepository<Journey, String> {
   @Modifying
   @Transactional
   @Query(value = "UPDATE cs7cs3.journey_members SET journey_members.status = :status WHERE user_id = :userId", nativeQuery = true)
-  public void setUserStatus(@Param("userId") String userId, @Param("status") UserStatus status);
+  public void setUserStatus(@Param("userId") String userId, @Param("status") int status);
 
   @Modifying
   @Transactional
   @Query(value = "UPDATE cs7cs3.journey SET joureny.status = :status WHERE id = :journeyId", nativeQuery = true)
-  public void setJourneyStatus(@Param("journeyId") String journeyId, @Param("status") JourneyStatus status);
+  public void setJourneyStatus(@Param("journeyId") String journeyId, @Param("status") int status);
 
   @Query(value = "SELECT status FROM cs7cs3.journey_members WHERE journey_id = :journeyId", nativeQuery = true)
   public List<UserStatus> getUserStatusByJourneyId(@Param("journeyId") String journeyId);
