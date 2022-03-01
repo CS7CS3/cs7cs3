@@ -159,18 +159,51 @@ paths:
               schema:
                 "$ref": "#/components/schemas/StartJourneyResponse"
 
+  "/message/send":
+    description: ""
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/SendMessageRequest"
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/SendMessageResponse"
+  "/message/get":
+    description: ""
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/GetMessageRequest"
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/GetMessageResponse"
+
 components:
   schemas:
     Username:
       type: string
     UUID:
       type: string
-      pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+      pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
     UserId:
       "$ref": "#/components/schemas/UUID"
     JourneyId:
       "$ref": "#/components/schemas/UUID"
     ReviewId:
+      "$ref": "#/components/schemas/UUID"
+    MessageId:
       "$ref": "#/components/schemas/UUID"
     Rating:
       type: number
@@ -556,6 +589,89 @@ components:
       required: ["token", "timestamp", "paylaod"]
     StartJourneyResponse:
       type: object
+      properties:
+        success:
+          type: boolean
+        reason:
+          type: string
+        token:
+          "$ref": "#/components/schemas/Token"
+      required: ["success", "reason", "token"]
+
+    # Message Definitions
+    SendMessageRequest:
+      type: object
+      properties:
+        token:
+          "$ref": "#/components/schemas/Token"
+        timestamp:
+          "$ref": "#/components/schemas/Timestamp"
+        payload:
+          type: object
+          properties:
+            sender:
+              "$ref": "#/components/schemas/UserId"
+            receiver:
+              "$ref": "#/components/schemas/UserId"
+            content:
+              type: string
+          required: ["shader", "receiver", "content"]
+      required: ["token", "timestamp", "paylaod"]
+    SendMessageResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        reason:
+          type: string
+        token:
+          "$ref": "#/components/schemas/Token"
+      required: ["success", "reason", "token"]
+
+    GetMessageRequest:
+      type: object
+      properties:
+        token:
+          "$ref": "#/components/schemas/Token"
+        timestamp:
+          "$ref": "#/components/schemas/Timestamp"
+        payload:
+          type: object
+          properties:
+            sender:
+              "$ref": "#/components/schemas/UserId"
+            receiver:
+              "$ref": "#/components/schemas/UserId"
+            from:
+              type: integer
+            to:
+              type: integer
+          required: ["shader", "receiver", "content"]
+      required: ["token", "timestamp", "paylaod"]
+    GetMessageResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        reason:
+          type: string
+        token:
+          "$ref": "#/components/schemas/Token"
+        payload:
+          type: object
+          properties:
+            messages:
+              type: array
+              items:
+                type: object
+                properties:
+                  timestamp:
+                    "$ref": "#/components/schemas/Timestamp"
+                  content:
+                    type: string
+                required: ["timestamp", "content"]
+          required: ["messages"]
+      required: ["success", "reason", "token", "payload"]
 
   securitySchemes:
     BasicAuth:
