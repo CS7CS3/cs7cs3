@@ -313,7 +313,7 @@ components:
     Review:
       type: object
       properties:
-        reviewId:
+        id:
           "$ref": "#/components/schemas/ReviewId"
         revieweeId:
           "$ref": "#/components/schemas/UserId"
@@ -329,7 +329,7 @@ components:
     ReviewMini:
       type: object
       properties:
-        reviewId:
+        id:
           "$ref": "#/components/schemas/ReviewId"
         revieweeId:
           "$ref": "#/components/schemas/UserId"
@@ -339,6 +339,19 @@ components:
           type: boolean
         rating:
           "$ref": "#/components/schemas/Rating"
+    Message:
+      type: object
+      properties:
+        id:
+          "$ref": "#/components/schemas/MessageId"
+        sender:
+          "$ref": "#/components/schemas/UserId"
+        receiver:
+          "$ref": "#/components/schemas/UserId"
+        content:
+          type: string
+        timestamp:
+          type: integer
 
     # Login/Register Definitions
     LoginRequest:
@@ -638,15 +651,13 @@ components:
         payload:
           type: object
           properties:
-            sender:
-              "$ref": "#/components/schemas/UserId"
-            receiver:
+            userId:
               "$ref": "#/components/schemas/UserId"
             from:
               type: integer
-            to:
+            len:
               type: integer
-          required: ["shader", "receiver", "content"]
+          required: ["userId", "from", "len"]
       required: ["token", "timestamp", "paylaod"]
     GetMessageResponse:
       type: object
@@ -663,13 +674,7 @@ components:
             messages:
               type: array
               items:
-                type: object
-                properties:
-                  timestamp:
-                    "$ref": "#/components/schemas/Timestamp"
-                  content:
-                    type: string
-                required: ["timestamp", "content"]
+                "$ref": "#/components/schemas/Message"
           required: ["messages"]
       required: ["success", "reason", "token", "payload"]
 

@@ -9,7 +9,6 @@ import lombok.Data;
 @Data
 @Embeddable
 public class Location extends Validatable {
-
   public double latitude = 0.0;
   public double longitude = 0.0;
 

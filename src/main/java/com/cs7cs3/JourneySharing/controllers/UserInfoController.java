@@ -105,12 +105,11 @@ import javax.transaction.Transactional;
 //     }
 
 //     repository.save(req.payload.get());
+
 //     return Response.make(true, "", /* next_token(token) */ "", Optional.empty());
 //   }
 
-
 // }
-
 
 import com.cs7cs3.JourneySharing.db.UserInfoRepository;
 import com.cs7cs3.JourneySharing.entities.UserInfo;
@@ -139,7 +138,7 @@ public class UserInfoController {
     private UserInfoRepository repository;
 
     @GetMapping("/{id}")
-    public Response<UserInfo> get(@PathVariable("id")String id, @RequestParam("token") String token){
+    public Response<UserInfo> get(@PathVariable("id") String id, @RequestParam("token") String token) {
 
         if (!Utils.validateToken(token)) {
             return Response.makeError("token validation failed");
@@ -157,7 +156,7 @@ public class UserInfoController {
     }
 
     @GetMapping("/{id}/ava")
-    public Response<String> getAva(@PathVariable("id")String id, @RequestParam("token") String token){
+    public Response<String> getAva(@PathVariable("id") String id, @RequestParam("token") String token) {
 
         if (!Utils.validateToken(token)) {
             return Response.makeError("token validation failed");
@@ -182,9 +181,9 @@ public class UserInfoController {
     }
 
     @PostMapping("/update/{id}")
-    //id: userId   update: without password
+    // id: userId update: without password
     @Transactional
-    public Response<UserInfo> updateUserInfo(@PathVariable String id, @RequestBody Request<UpdateUserInfoRequest> req){
+    public Response<UserInfo> updateUserInfo(@PathVariable String id, @RequestBody Request<UpdateUserInfoRequest> req) {
         logger.info(req.toString());
 
         if (!req.validate()) {
@@ -209,7 +208,7 @@ public class UserInfoController {
         var un = payload.username;
         var ava = payload.avatarUrl;
         var b = payload.boi;
-        var userinfo = UserInfo.make2(id,un,ava,b);
+        var userinfo = UserInfo.make2(id, un, ava, b);
 
         System.out.println(userinfo);
         repository.save(userinfo);

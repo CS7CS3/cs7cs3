@@ -1,6 +1,10 @@
 package com.cs7cs3.JourneySharing.utils;
 
 public class Utils {
+  public static String makeUUID() {
+    return Utils.makeUUID();
+  }
+
   public static String makeToken(String username) {
     return "";
   }

@@ -4,11 +4,11 @@ import javax.transaction.Transactional;
 
 import com.cs7cs3.JourneySharing.db.ReviewRepository;
 import com.cs7cs3.JourneySharing.entities.UserReview;
-import com.cs7cs3.JourneySharing.entities.messages.*;
+import com.cs7cs3.JourneySharing.entities.messages.Request;
+import com.cs7cs3.JourneySharing.entities.messages.Response;
 import com.cs7cs3.JourneySharing.entities.messages.review.CreateReviewRequest;
 import com.cs7cs3.JourneySharing.entities.messages.review.CreateReviewResponse;
 import com.cs7cs3.JourneySharing.entities.messages.review.GetReviewByUserIdRequest;
-import com.cs7cs3.JourneySharing.entities.messages.review.GetReviewByUserIdResponse;
 import com.cs7cs3.JourneySharing.utils.Utils;
 
 import org.slf4j.Logger;
@@ -29,8 +29,7 @@ public class ReviewController {
   private ReviewRepository repository;
 
   @PostMapping("/get-by-userid")
-  // userId
-  public Response<UserReview> get( @RequestBody Request<GetReviewByUserIdRequest> req) {
+  public Response<CreateReviewResponse> get(@RequestBody Request<GetReviewByUserIdRequest> req) {
     var testRes = req.test();
     if (testRes.right.isPresent()) {
       return Response.makeError(testRes.right.get());
@@ -38,12 +37,11 @@ public class ReviewController {
     var payload = testRes.left;
 
     var res = repository.findByUser(payload.userId);
-
-
     if (!res.isPresent()) {
       return Response.makeError("review does not exist");
     }
-    return Response.make(Utils.nextToken(req.token), res.get());
+
+    return Response.make(Utils.nextToken(req.token), CreateReviewResponse.make(res.get()));
   }
 
   @PostMapping("/create")
@@ -57,10 +55,9 @@ public class ReviewController {
     }
     var payload = res.left;
 
-    var review = UserReview.make( payload.userId,payload.revieweeId, payload.rating, payload.content);
-    System.out.println(review);
+    var review = UserReview.make(payload.userId, payload.revieweeId, payload.rating, payload.content);
+    logger.info(review.toString());
     repository.save(review);
-//    repository.insert(payload.reviewId,payload.userId, payload.rating, payload.content,payload.anonymous, payload.getRevieweeId());
 
     return Response.make(Utils.nextToken(req.token), CreateReviewResponse.make(review));
   }

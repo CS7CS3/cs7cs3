@@ -2,7 +2,6 @@ package com.cs7cs3.JourneySharing.entities;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -16,6 +15,7 @@ import javax.persistence.Table;
 
 import com.cs7cs3.JourneySharing.entities.base.validator.Validatable;
 import com.cs7cs3.JourneySharing.entities.messages.journey.CreateJourneyRequest;
+import com.cs7cs3.JourneySharing.utils.Utils;
 
 import lombok.Data;
 import lombok.NonNull;
@@ -28,7 +28,7 @@ public class Journey extends Validatable {
   public static Journey make(@NonNull String userId, @NonNull Location from, @NonNull Location to) {
     var journey = new Journey();
 
-    journey.id = UUID.randomUUID().toString();
+    journey.id = Utils.makeUUID();
 
     journey.createdTime = System.currentTimeMillis() / 1000;
 
@@ -44,7 +44,7 @@ public class Journey extends Validatable {
   public static Journey make(@NonNull CreateJourneyRequest req) {
     var journey = new Journey();
 
-    journey.id = UUID.randomUUID().toString();
+    journey.id = Utils.makeUUID();
 
     journey.createdTime = System.currentTimeMillis() / 1000;
 
