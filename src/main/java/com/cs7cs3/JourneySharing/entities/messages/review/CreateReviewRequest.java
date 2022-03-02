@@ -6,8 +6,8 @@ import lombok.Data;
 
 @Data
 public class CreateReviewRequest extends Validatable {
+  public String id = "";
   public String userId = "";
-  public String reviewId = "";
   public String revieweeId = "";
   public double rating = 0.0f;
   public String content = "";

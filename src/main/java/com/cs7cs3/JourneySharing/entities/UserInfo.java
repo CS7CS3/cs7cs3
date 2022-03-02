@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.cs7cs3.JourneySharing.entities.base.validator.Validatable;
-import com.cs7cs3.JourneySharing.entities.messages.RegisterRequest;
+import com.cs7cs3.JourneySharing.entities.messages.account.RegisterRequest;
 
 import lombok.Data;
 

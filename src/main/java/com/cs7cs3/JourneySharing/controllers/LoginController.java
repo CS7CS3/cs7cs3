@@ -1,9 +1,9 @@
 package com.cs7cs3.JourneySharing.controllers;
 
 import com.cs7cs3.JourneySharing.db.AccountRepository;
-import com.cs7cs3.JourneySharing.entities.base.Empty;
-import com.cs7cs3.JourneySharing.entities.messages.LoginRequest;
 import com.cs7cs3.JourneySharing.entities.messages.Response;
+import com.cs7cs3.JourneySharing.entities.messages.account.LoginRequest;
+import com.cs7cs3.JourneySharing.entities.messages.account.LoginResponse;
 import com.cs7cs3.JourneySharing.utils.Utils;
 
 import org.slf4j.Logger;
@@ -28,7 +28,7 @@ public class LoginController {
 
   @PostMapping
   @ResponseBody
-  public Response<Empty> login(@RequestBody LoginRequest req) {
+  public Response<LoginResponse> login(@RequestBody LoginRequest req) {
     logger.info(req.toString());
     if (!req.validate()) {
       return Response.makeError("request validation failed");
@@ -39,7 +39,7 @@ public class LoginController {
       return Response.makeError("wrong username or password");
     }
 
-    return Response.make(Utils.makeToken(req.username));
+    return Response.make(Utils.makeToken(req.username), LoginResponse.make());
   }
 
 }

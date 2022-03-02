@@ -1,4 +1,4 @@
-package com.cs7cs3.JourneySharing.entities.messages;
+package com.cs7cs3.JourneySharing.entities.messages.account;
 
 import com.cs7cs3.JourneySharing.entities.base.validator.Validatable;
 

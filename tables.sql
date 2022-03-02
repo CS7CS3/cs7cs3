@@ -94,6 +94,25 @@ DELIMITER ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
+-- Table structure for table `message`
+--
+
+DROP TABLE IF EXISTS `message`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `message` (
+  `id` varchar(255) NOT NULL DEFAULT '',
+  `sender` varchar(255) NOT NULL DEFAULT '',
+  `receiver` varchar(255) NOT NULL DEFAULT '',
+  `content` varchar(255) NOT NULL DEFAULT '',
+  `timestamp` int NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `2b5c2b8b-8a22-f2f7-ae0d-acb761bcfb99` FOREIGN KEY (`sender`) REFERENCES `account` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `8ebc48f9-6de6-385b-2ef1-74f8713b1929` FOREIGN KEY (`receiver`) REFERENCES `account` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `user_info`
 --
 
