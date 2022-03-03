@@ -611,6 +611,72 @@ components:
           "$ref": "#/components/schemas/Token"
       required: ["success", "reason", "token"]
 
+
+    # UserReview Definitions
+    CreateReviewRequest:
+      type: object
+      properties:
+        token:
+          "$ref": "#/components/schemas/Token"
+        timestamp:
+          "$ref": "#/components/schemas/Timestamp"
+        payload:
+          type: object
+          properties:
+            userId:
+              "$ref": "#/components/schemas/UserId"
+            id:
+              "$ref": "#/components/schemas/ReviewId"
+            revieweeId:
+              "$ref": "#/components/schemas/UserId"
+            anonymous:
+              type: boolean
+            rating:
+              "$ref": "#/components/schemas/Rating"
+            content:
+              type: string
+          required: [ "id", "reviewId", "revieweeId", "anonymous","rating","content" ]
+      required: [ "token", "timestamp", "payload" ]
+    CreateReviewResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        reason:
+          type: string
+        token:
+          "$ref": "#/components/schemas/Token"
+        payload:
+          "$ref": "#/components/schemas/Review"
+      required: [ "success", "reason", "token", "payload" ]
+
+    GetReviewByUserIdRequest:
+      type: object
+      properties:
+        token:
+          "$ref": "#/components/schemas/Token"
+        timestamp:
+          "$ref": "#/components/schemas/Timestamp"
+        payload:
+          type: object
+          properties:
+            journeyId:
+              "$ref": "#/components/schemas/UserId"
+          required: [ "userId" ]
+      required: [ "token", "timestamp", "payload" ]
+    GetReviewByUserIdResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        reason:
+          type: string
+        token:
+          "$ref": "#/components/schemas/Token"
+        payload:
+          "$ref": "#/components/schemas/UserReview"
+      required: [ "success", "reason", "token", "payload" ]
+
     # Message Definitions
     SendMessageRequest:
       type: object
