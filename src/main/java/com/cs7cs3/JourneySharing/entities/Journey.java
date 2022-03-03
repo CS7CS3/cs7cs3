@@ -101,11 +101,8 @@ public class Journey extends Validatable {
 
   @Id
   public String id;
-
   public long createdTime = 0;
-
   public long endTime = 0;
-
   public JourneyStatus status = JourneyStatus.Waiting;
 
   @Embedded
@@ -123,13 +120,9 @@ public class Journey extends Validatable {
   public Location to = new Location();
 
   public int maxMember = 1;
-
   public String host = "";
 
   @ElementCollection
-  // @Column(name = "user_id")
-  // public List<String> members = new ArrayList<String>();
-  // @Embedded
   public List<JourneyMember> members = new ArrayList<JourneyMember>();
 
 }

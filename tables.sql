@@ -124,7 +124,6 @@ CREATE TABLE `user_info` (
   `avatar_url` text NOT NULL DEFAULT '',
   `bio` text NOT NULL DEFAULT '',
   `rating` double NOT NULL DEFAULT 0,
-  `status` int(11) NOT NULL DEFAULT 0,
   `username` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   UNIQUE KEY `856270d8-03e4-4485-b2ec-74f3a9723067` (`username`),
@@ -141,7 +140,7 @@ DROP TABLE IF EXISTS `user_info_histories`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_info_histories` (
   `user_id` varchar(255) NOT NULL DEFAULT '',
-  `journey_id` varchar(255) DEFAULT '',
+  `journey_id` varchar(255) NOT NULL DEFAULT '',
   KEY `ecd5d914-9449-40d1-8957-1daa48e98bd7` (`user_id`),
   KEY `6fdb4889-414b-4a00-9c2f-860a474e78ad` (`journey_id`),
   CONSTRAINT `6fdb4889-414b-4a00-9c2f-860a474e78ad` FOREIGN KEY (`journey_id`) REFERENCES `journey` (`id`) ON DELETE CASCADE,
@@ -158,7 +157,7 @@ DROP TABLE IF EXISTS `user_info_reviews`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_info_reviews` (
   `user_id` varchar(255) NOT NULL DEFAULT '',
-  `review_id` varchar(255) DEFAULT '',
+  `review_id` varchar(255) NOT NULL DEFAULT '',
   KEY `02780f9f-a0c2-40bf-bbfd-9d5e6679a8cc` (`user_id`),
   KEY `87712e75-3396-4883-8733-cadcee95b005` (`review_id`),
   CONSTRAINT `02780f9f-a0c2-40bf-bbfd-9d5e6679a8cc` FOREIGN KEY (`user_id`) REFERENCES `user_info` (`id`) ON DELETE CASCADE,
@@ -174,13 +173,13 @@ DROP TABLE IF EXISTS `user_review`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_review` (
-  `review_id` varchar(255) NOT NULL DEFAULT '',
+  `id` varchar(255) NOT NULL DEFAULT '',
   `anonymous` bit(1) NOT NULL DEFAULT b'0',
   `content` varchar(255) NOT NULL DEFAULT '',
   `rating` double NOT NULL DEFAULT 0,
   `user_id` varchar(255) NOT NULL DEFAULT '',
   `reviewee_id` varchar(255) NOT NULL DEFAULT '',
-  PRIMARY KEY (`review_id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

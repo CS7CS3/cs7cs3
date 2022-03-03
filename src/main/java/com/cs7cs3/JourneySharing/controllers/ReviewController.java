@@ -9,6 +9,7 @@ import com.cs7cs3.JourneySharing.entities.messages.Response;
 import com.cs7cs3.JourneySharing.entities.messages.review.CreateReviewRequest;
 import com.cs7cs3.JourneySharing.entities.messages.review.CreateReviewResponse;
 import com.cs7cs3.JourneySharing.entities.messages.review.GetReviewByUserIdRequest;
+import com.cs7cs3.JourneySharing.entities.messages.review.GetReviewByUserIdResponse;
 import com.cs7cs3.JourneySharing.utils.Utils;
 
 import org.slf4j.Logger;
@@ -29,19 +30,19 @@ public class ReviewController {
   private ReviewRepository repository;
 
   @PostMapping("/get-by-userid")
-  public Response<CreateReviewResponse> get(@RequestBody Request<GetReviewByUserIdRequest> req) {
+  public Response<GetReviewByUserIdResponse> get(@RequestBody Request<GetReviewByUserIdRequest> req) {
     var testRes = req.test();
     if (testRes.right.isPresent()) {
       return Response.makeError(testRes.right.get());
     }
     var payload = testRes.left;
 
-    var res = repository.findByUser(payload.userId);
-    if (!res.isPresent()) {
+    var res = repository.findByUser(payload.userId, payload.from, payload.len);
+    if (res == null) {
       return Response.makeError("review does not exist");
     }
 
-    return Response.make(Utils.nextToken(req.token), CreateReviewResponse.make(res.get()));
+    return Response.make(Utils.nextToken(req.token), GetReviewByUserIdResponse.make(res));
   }
 
   @PostMapping("/create")

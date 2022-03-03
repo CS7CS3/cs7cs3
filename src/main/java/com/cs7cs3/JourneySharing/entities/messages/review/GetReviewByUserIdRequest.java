@@ -7,4 +7,6 @@ import lombok.Data;
 @Data
 public class GetReviewByUserIdRequest extends Validatable {
     public String userId = "";
+    public int from;
+    public int len;
 }

@@ -29,9 +29,9 @@ public class UserReview extends Validatable {
   @Id
   public String id = Utils.makeUUID();
   public String userId = "";
+  public String revieweeId = "";
   public boolean anonymous = true;
   public double rating = 0.0;
   public String content = "";
-  public String revieweeId = "";
 
 }

@@ -3,10 +3,12 @@ package com.cs7cs3.JourneySharing.entities;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
 import com.cs7cs3.JourneySharing.entities.base.validator.Validatable;
@@ -18,7 +20,6 @@ import lombok.Data;
 @Entity
 @Table(name = "user_info")
 public class UserInfo extends Validatable {
-
   public static UserInfo make(Account account, RegisterRequest req) {
     UserInfo userInfo = new UserInfo();
 
@@ -28,7 +29,7 @@ public class UserInfo extends Validatable {
     return userInfo;
   }
 
-  public static UserInfo make2(String id, String username, String avatarUrl, String boi) {
+  public static UserInfo make(String id, String username, String avatarUrl, String boi) {
     UserInfo userInfo = new UserInfo();
 
     userInfo.id = id;
@@ -46,11 +47,13 @@ public class UserInfo extends Validatable {
   public String bio = "";
   public double rating = 0.0;
 
-  @ElementCollection
   @Column(name = "review_id")
+  @ElementCollection
+  @CollectionTable(joinColumns = @JoinColumn(name = "user_id"))
   public List<String> reviews = new ArrayList<String>();
 
-  @ElementCollection
   @Column(name = "journey_id")
+  @ElementCollection
+  @CollectionTable(joinColumns = @JoinColumn(name = "user_id"))
   public List<String> histories = new ArrayList<String>();
 }
