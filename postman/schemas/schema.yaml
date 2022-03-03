@@ -611,7 +611,6 @@ components:
           "$ref": "#/components/schemas/Token"
       required: ["success", "reason", "token"]
 
-
     # UserReview Definitions
     CreateReviewRequest:
       type: object
@@ -635,8 +634,9 @@ components:
               "$ref": "#/components/schemas/Rating"
             content:
               type: string
-          required: [ "id", "reviewId", "revieweeId", "anonymous","rating","content" ]
-      required: [ "token", "timestamp", "payload" ]
+          required:
+            ["id", "reviewId", "revieweeId", "anonymous", "rating", "content"]
+      required: ["token", "timestamp", "payload"]
     CreateReviewResponse:
       type: object
       properties:
@@ -648,7 +648,7 @@ components:
           "$ref": "#/components/schemas/Token"
         payload:
           "$ref": "#/components/schemas/Review"
-      required: [ "success", "reason", "token", "payload" ]
+      required: ["success", "reason", "token", "payload"]
 
     GetReviewByUserIdRequest:
       type: object
@@ -662,8 +662,8 @@ components:
           properties:
             journeyId:
               "$ref": "#/components/schemas/UserId"
-          required: [ "userId" ]
-      required: [ "token", "timestamp", "payload" ]
+          required: ["userId"]
+      required: ["token", "timestamp", "payload"]
     GetReviewByUserIdResponse:
       type: object
       properties:
@@ -674,8 +674,8 @@ components:
         token:
           "$ref": "#/components/schemas/Token"
         payload:
-          "$ref": "#/components/schemas/UserReview"
-      required: [ "success", "reason", "token", "payload" ]
+          "$ref": "#/components/schemas/Review"
+      required: ["success", "reason", "token", "payload"]
 
     # Message Definitions
     SendMessageRequest:

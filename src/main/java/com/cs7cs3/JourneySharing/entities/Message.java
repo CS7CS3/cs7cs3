@@ -26,6 +26,9 @@ public class Message extends Validatable {
   public Message(String sender, String receiver, String content) {
     id = Utils.makeUUID();
     timestamp = Instant.now().getEpochSecond();
+    this.sender = sender;
+    this.receiver = receiver;
+    this.content = content;
   }
 
   @Id

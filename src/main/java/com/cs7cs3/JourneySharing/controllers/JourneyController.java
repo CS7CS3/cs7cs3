@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 import com.cs7cs3.JourneySharing.db.JourneyRepository;
+import com.cs7cs3.JourneySharing.db.UserInfoRepository;
 import com.cs7cs3.JourneySharing.entities.Journey;
 import com.cs7cs3.JourneySharing.entities.Journey.JourneyStatus;
 import com.cs7cs3.JourneySharing.entities.Journey.UserStatus;
@@ -46,6 +47,9 @@ public class JourneyController {
 
   @Autowired
   private JourneyRepository journeyRepository;
+
+  @Autowired
+  private UserInfoRepository userInfoRepository;
 
   @PostMapping("/approve-join")
   public Response<ApproveJoinResponse> approveJoin(@RequestBody Request<ApproveJoinRequest> req) {
@@ -92,6 +96,10 @@ public class JourneyController {
 
     if (allArrived) {
       journeyRepository.setJourneyStatus(journeyId, JourneyStatus.End.ordinal());
+      var userIds = journeyRepository.getUserIdByJourneyId(journeyId);
+      for (String userId : userIds) {
+        userInfoRepository.addHistory(userId, journeyId);
+      }
     }
 
     return Response.make(Utils.nextToken(req.token), ConfirmArriveResponse.make());
@@ -247,6 +255,7 @@ public class JourneyController {
 
     if (noPendingApproval) {
       journeyRepository.setJourneyStatus(journeyId, JourneyStatus.Travelling.ordinal());
+      journeyRepository.setUserStatusByJourneyId(journeyId, UserStatus.Travelling.ordinal());
     }
 
     return Response.make(Utils.nextToken(req.token), StartJourneyResponse.make());
