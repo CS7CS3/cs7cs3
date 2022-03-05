@@ -161,7 +161,7 @@ CREATE TABLE `user_info_reviews` (
   KEY `02780f9f-a0c2-40bf-bbfd-9d5e6679a8cc` (`user_id`),
   KEY `87712e75-3396-4883-8733-cadcee95b005` (`review_id`),
   CONSTRAINT `02780f9f-a0c2-40bf-bbfd-9d5e6679a8cc` FOREIGN KEY (`user_id`) REFERENCES `user_info` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `87712e75-3396-4883-8733-cadcee95b005` FOREIGN KEY (`review_id`) REFERENCES `user_review` (`review_id`) ON DELETE CASCADE
+  CONSTRAINT `87712e75-3396-4883-8733-cadcee95b005` FOREIGN KEY (`review_id`) REFERENCES `user_review` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

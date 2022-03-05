@@ -11,22 +11,7 @@ import com.cs7cs3.JourneySharing.entities.Journey.UserStatus;
 import com.cs7cs3.JourneySharing.entities.base.Empty;
 import com.cs7cs3.JourneySharing.entities.messages.Request;
 import com.cs7cs3.JourneySharing.entities.messages.Response;
-import com.cs7cs3.JourneySharing.entities.messages.journey.ApproveJoinRequest;
-import com.cs7cs3.JourneySharing.entities.messages.journey.ApproveJoinResponse;
-import com.cs7cs3.JourneySharing.entities.messages.journey.ConfirmArriveRequest;
-import com.cs7cs3.JourneySharing.entities.messages.journey.ConfirmArriveResponse;
-import com.cs7cs3.JourneySharing.entities.messages.journey.CreateJourneyRequest;
-import com.cs7cs3.JourneySharing.entities.messages.journey.CreateJourneyResponse;
-import com.cs7cs3.JourneySharing.entities.messages.journey.ExitJourneyRequest;
-import com.cs7cs3.JourneySharing.entities.messages.journey.ExitJourneyResponse;
-import com.cs7cs3.JourneySharing.entities.messages.journey.GetJourneyByIdRequest;
-import com.cs7cs3.JourneySharing.entities.messages.journey.GetJourneyByIdResponse;
-import com.cs7cs3.JourneySharing.entities.messages.journey.GetJourneyByLocationRequest;
-import com.cs7cs3.JourneySharing.entities.messages.journey.GetJourneyByLocationResponse;
-import com.cs7cs3.JourneySharing.entities.messages.journey.JoinJourneyRequest;
-import com.cs7cs3.JourneySharing.entities.messages.journey.JoinJourneyResponse;
-import com.cs7cs3.JourneySharing.entities.messages.journey.StartJourneyRequest;
-import com.cs7cs3.JourneySharing.entities.messages.journey.StartJourneyResponse;
+import com.cs7cs3.JourneySharing.entities.messages.journey.*;
 import com.cs7cs3.JourneySharing.utils.Utils;
 
 import org.slf4j.Logger;
@@ -297,5 +282,32 @@ public class JourneyController {
     }
     return Response.make(Utils.nextToken(req.token));
   }
+
+  @PostMapping("/history")
+  public Response<GetHistoryResponse> get (@RequestBody Request<GetHistoryRequest> req){
+    var testRes = req.test();
+    if (testRes.right.isPresent()){
+      return Response.makeError(testRes.right.get());
+    }
+
+    var payload = testRes.left;
+    var res1 = journeyRepository.findJidByUser(payload.userId, payload.from, payload.len);
+    System.out.println(res1);
+    if (res1.isEmpty() || res1 == null){
+      return Response.makeError("history does not exist 1");
+    }
+    for ( String r:res1
+         ) {
+      var res2 = journeyRepository.findById(r);
+      if (res2.isEmpty() || res2 == null) {
+        return Response.makeError("history does not exist 2");
+      }
+      return Response.make(Utils.nextToken(req.token),GetHistoryResponse.make(res2));
+    }
+
+    return Response.makeError("history does not exist 3");
+  }
+
+
 
 }

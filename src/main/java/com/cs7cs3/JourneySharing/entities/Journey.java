@@ -57,7 +57,6 @@ public class Journey extends Validatable {
     return journey;
   }
 
-  // 不该是静态吧
   public enum JourneyStatus {
     Waiting, Travelling, End;
 
@@ -71,7 +70,7 @@ public class Journey extends Validatable {
     }
   }
 
-  // 不知道表示了什么，不该出现在这里
+
   public enum UserStatus {
     PendingApproval, Waiting, Travelling, Arrived;
 
