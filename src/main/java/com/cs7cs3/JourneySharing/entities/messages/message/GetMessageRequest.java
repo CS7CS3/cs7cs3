@@ -6,7 +6,6 @@ import lombok.Data;
 
 @Data
 public class GetMessageRequest extends Validatable {
-  public String userId;
   public int from;
   public int len;
 }

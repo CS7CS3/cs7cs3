@@ -73,6 +73,18 @@ public class Request<T extends IValidatable> extends Validatable {
     return new Pair<T, Optional<String>>(payload, Optional.empty());
   }
 
+  public Optional<String> testIgnorePayloadCheck() {
+    if (!validate()) {
+      return Optional.of("request validation failed");
+    }
+
+    if (!Utils.validateToken(this.token)) {
+      return Optional.of("token validation failed");
+    }
+
+    return Optional.empty();
+  }
+
   public String token = "";
   public long timestamp = 0;
   public Optional<T> payload = Optional.empty();

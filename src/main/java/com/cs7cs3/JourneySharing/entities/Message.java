@@ -16,8 +16,8 @@ import lombok.Data;
 @Entity
 @Table(name = "message")
 public class Message extends Validatable {
-  public static Message make(SendMessageRequest req) {
-    return new Message(req.sender, req.receiver, req.content);
+  public static Message make(String sender, SendMessageRequest req) {
+    return new Message(sender, req.receiver, req.content);
   }
 
   public Message() {

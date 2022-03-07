@@ -61,7 +61,9 @@ public class RegisterController {
       return Response.makeError("duplicated account");
     }
 
-    return Response.make(Utils.makeToken(req.username), RegisterResponse.make());
+    String id = userInfoRepository.getIdByUsername(req.username);
+
+    return Response.make(Utils.makeToken(id), RegisterResponse.make());
   }
 
 }

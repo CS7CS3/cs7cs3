@@ -44,6 +44,7 @@ public class Response<T> extends Validatable {
   public Response(boolean success, String reason, String token, T t) {
     this.success = success;
     this.reason = reason;
+    this.token = token;
     if (t != null) {
       this.payload = Optional.of(t);
     }
@@ -52,6 +53,7 @@ public class Response<T> extends Validatable {
   public Response(boolean success, String reason, String token, Optional<T> t) {
     this.success = success;
     this.reason = reason;
+    this.token = token;
     this.payload = t;
   }
 

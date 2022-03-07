@@ -7,7 +7,6 @@ import lombok.Data;
 
 @Data
 public class CreateJourneyRequest extends Validatable {
-  public String userId = "";
   public Location from = new Location();
   public Location to = new Location();
 }

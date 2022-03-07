@@ -6,7 +6,6 @@ import lombok.Data;
 
 @Data
 public class SendMessageRequest extends Validatable {
-  public String sender;
   public String receiver;
   public String content;
 }

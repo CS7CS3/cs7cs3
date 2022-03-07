@@ -12,4 +12,5 @@ public class LoginResponse extends Validatable {
 
     private LoginResponse() {
     }
+
 }

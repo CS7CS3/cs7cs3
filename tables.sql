@@ -56,6 +56,43 @@ CREATE TABLE `journey` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `user_review`
+--
+
+DROP TABLE IF EXISTS `user_review`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_review` (
+  `id` varchar(255) NOT NULL DEFAULT '',
+  `anonymous` bit(1) NOT NULL DEFAULT b'0',
+  `content` varchar(255) NOT NULL DEFAULT '',
+  `rating` double NOT NULL DEFAULT 0,
+  `user_id` varchar(255) NOT NULL DEFAULT '',
+  `reviewee_id` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `message`
+--
+
+DROP TABLE IF EXISTS `message`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `message` (
+  `id` varchar(255) NOT NULL DEFAULT '',
+  `sender` varchar(255) NOT NULL DEFAULT '',
+  `receiver` varchar(255) NOT NULL DEFAULT '',
+  `content` varchar(255) NOT NULL DEFAULT '',
+  `timestamp` int NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `2b5c2b8b-8a22-f2f7-ae0d-acb761bcfb99` FOREIGN KEY (`sender`) REFERENCES `account` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `8ebc48f9-6de6-385b-2ef1-74f8713b1929` FOREIGN KEY (`receiver`) REFERENCES `account` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `journey_members`
 --
 
@@ -92,25 +129,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-
---
--- Table structure for table `message`
---
-
-DROP TABLE IF EXISTS `message`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `message` (
-  `id` varchar(255) NOT NULL DEFAULT '',
-  `sender` varchar(255) NOT NULL DEFAULT '',
-  `receiver` varchar(255) NOT NULL DEFAULT '',
-  `content` varchar(255) NOT NULL DEFAULT '',
-  `timestamp` int NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id`),
-  CONSTRAINT `2b5c2b8b-8a22-f2f7-ae0d-acb761bcfb99` FOREIGN KEY (`sender`) REFERENCES `account` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `8ebc48f9-6de6-385b-2ef1-74f8713b1929` FOREIGN KEY (`receiver`) REFERENCES `account` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `user_info`
@@ -162,24 +180,6 @@ CREATE TABLE `user_info_reviews` (
   KEY `87712e75-3396-4883-8733-cadcee95b005` (`review_id`),
   CONSTRAINT `02780f9f-a0c2-40bf-bbfd-9d5e6679a8cc` FOREIGN KEY (`user_id`) REFERENCES `user_info` (`id`) ON DELETE CASCADE,
   CONSTRAINT `87712e75-3396-4883-8733-cadcee95b005` FOREIGN KEY (`review_id`) REFERENCES `user_review` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `user_review`
---
-
-DROP TABLE IF EXISTS `user_review`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `user_review` (
-  `id` varchar(255) NOT NULL DEFAULT '',
-  `anonymous` bit(1) NOT NULL DEFAULT b'0',
-  `content` varchar(255) NOT NULL DEFAULT '',
-  `rating` double NOT NULL DEFAULT 0,
-  `user_id` varchar(255) NOT NULL DEFAULT '',
-  `reviewee_id` varchar(255) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

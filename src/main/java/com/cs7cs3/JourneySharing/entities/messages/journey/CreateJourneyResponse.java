@@ -12,9 +12,8 @@ public class CreateJourneyResponse extends Validatable {
   }
 
   private CreateJourneyResponse(Journey journey) {
-    this.journey = journey;
+    this.id = journey.id;
   }
 
-  public Journey journey;
-
+  public String id;
 }

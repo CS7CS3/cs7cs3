@@ -8,7 +8,6 @@ import com.cs7cs3.JourneySharing.entities.Journey;
 import com.cs7cs3.JourneySharing.entities.Journey.JourneyStatus;
 import com.cs7cs3.JourneySharing.entities.Journey.UserStatus;
 
-import com.cs7cs3.JourneySharing.entities.UserReview;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -81,12 +80,6 @@ public interface JourneyRepository extends JpaRepository<Journey, String> {
   @Query(value = "SELECT user_id FROM cs7cs3.journey_members WHERE journey_id = :journeyId", nativeQuery = true)
   public List<String> getUserIdByJourneyId(@Param("journeyId") String journeyId);
 
-
-//  @Query(value = "SELECT journey_id FROM cs7cs3.journey_members WHERE user_id = '333' LIMIT 1 OFFSET 0 ", nativeQuery = true)
-//  public List<String> findJidByUser(@Param("userId") String userId, @Param("from") int from, @Param("len") int len);
-
-  @Query(value = "SELECT journey_id FROM cs7cs3.journey_members WHERE user_id = :userId LIMIT :len OFFSET :from ", nativeQuery = true)
-  public List<String> findJidByUser(@Param("userId") String userId, @Param("from") int from, @Param("len") int len);
-
-
+  @Query(value = "SELECT user_id FROM cs7cs3.journey_members WHERE journey_id = :journeyId AND status = :status", nativeQuery = true)
+  public List<String> getUserIdByJourneyIdAndStatus(@Param("journeyId") String journeyId, @Param("status") int status);
 }

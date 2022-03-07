@@ -41,7 +41,7 @@ public class Journey extends Validatable {
     return journey;
   }
 
-  public static Journey make(@NonNull CreateJourneyRequest req) {
+  public static Journey make(@NonNull String userId, @NonNull CreateJourneyRequest req) {
     var journey = new Journey();
 
     journey.id = Utils.makeUUID();
@@ -50,9 +50,8 @@ public class Journey extends Validatable {
 
     journey.from = req.from;
     journey.to = req.to;
-    // journey.members.add(req.userId);
-    journey.members.add(JourneyMember.make(req.userId, UserStatus.Waiting));
-    journey.host = req.userId;
+    journey.members.add(JourneyMember.make(userId, UserStatus.Waiting));
+    journey.host = userId;
 
     return journey;
   }

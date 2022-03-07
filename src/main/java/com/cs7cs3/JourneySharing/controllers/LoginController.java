@@ -1,6 +1,7 @@
 package com.cs7cs3.JourneySharing.controllers;
 
 import com.cs7cs3.JourneySharing.db.AccountRepository;
+import com.cs7cs3.JourneySharing.db.UserInfoRepository;
 import com.cs7cs3.JourneySharing.entities.messages.Response;
 import com.cs7cs3.JourneySharing.entities.messages.account.LoginRequest;
 import com.cs7cs3.JourneySharing.entities.messages.account.LoginResponse;
@@ -24,6 +25,9 @@ public class LoginController {
   @Autowired
   private AccountRepository accountRepository;
 
+  @Autowired
+  private UserInfoRepository userInfoRepository;
+
   private Logger logger = LoggerFactory.getLogger(this.getClass());
 
   @PostMapping
@@ -39,7 +43,9 @@ public class LoginController {
       return Response.makeError("wrong username or password");
     }
 
-    return Response.make(Utils.makeToken(req.username), LoginResponse.make());
+    String id = userInfoRepository.getIdByUsername(req.username);
+
+    return Response.make(Utils.makeToken(id), LoginResponse.make());
   }
 
 }
