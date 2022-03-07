@@ -19,6 +19,8 @@ import com.cs7cs3.JourneySharing.entities.messages.journey.CreateJourneyRequest;
 import com.cs7cs3.JourneySharing.entities.messages.journey.CreateJourneyResponse;
 import com.cs7cs3.JourneySharing.entities.messages.journey.ExitJourneyRequest;
 import com.cs7cs3.JourneySharing.entities.messages.journey.ExitJourneyResponse;
+import com.cs7cs3.JourneySharing.entities.messages.journey.GetHistoryRequest;
+import com.cs7cs3.JourneySharing.entities.messages.journey.GetHistoryResponse;
 import com.cs7cs3.JourneySharing.entities.messages.journey.GetJourneyByIdRequest;
 import com.cs7cs3.JourneySharing.entities.messages.journey.GetJourneyByIdResponse;
 import com.cs7cs3.JourneySharing.entities.messages.journey.GetJourneyByLocationRequest;
@@ -317,28 +319,28 @@ public class JourneyController {
     return Response.make(Utils.nextToken(req.token));
   }
 
-  // @PostMapping("/history")
-  // public Response<GetHistoryResponse> get(@RequestBody Request<GetHistoryRequest> req) {
-  //   var testRes = req.test();
-  //   if (testRes.right.isPresent()) {
-  //     return Response.makeError(testRes.right.get());
-  //   }
+  @PostMapping("/history")
+  public Response<GetHistoryResponse> get(@RequestBody Request<GetHistoryRequest> req) {
+    var testRes = req.test();
+    if (testRes.right.isPresent()) {
+      return Response.makeError(testRes.right.get());
+    }
 
-  //   var payload = testRes.left;
-  //   var res1 = journeyRepository.findJidByUser(payload.userId, payload.from, payload.len);
-  //   System.out.println(res1);
-  //   if (res1.isEmpty() || res1 == null) {
-  //     return Response.makeError("history does not exist 1");
-  //   }
-  //   for (String r : res1) {
-  //     var res2 = journeyRepository.findById(r);
-  //     if (res2.isEmpty() || res2 == null) {
-  //       return Response.makeError("history does not exist 2");
-  //     }
-  //     return Response.make(Utils.nextToken(req.token), GetHistoryResponse.make(res2));
-  //   }
+    var payload = testRes.left;
+    var res1 = journeyRepository.findJourneyIdByUserId(payload.userId, payload.from, payload.len);
+    System.out.println(res1);
+    if (res1.isEmpty() || res1 == null) {
+      return Response.makeError("history does not exist 1");
+    }
+    for (String r : res1) {
+      var res2 = journeyRepository.findById(r);
+      if (res2.isEmpty() || res2 == null) {
+        return Response.makeError("history does not exist 2");
+      }
+      return Response.make(Utils.nextToken(req.token), GetHistoryResponse.make(res2));
+    }
 
-  //   return Response.makeError("history does not exist 3");
-  // }
+    return Response.makeError("history does not exist 3");
+  }
 
 }
