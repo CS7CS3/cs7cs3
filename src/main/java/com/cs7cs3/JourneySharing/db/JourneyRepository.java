@@ -5,8 +5,8 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import com.cs7cs3.JourneySharing.entities.Journey;
-import com.cs7cs3.JourneySharing.entities.Journey.JourneyStatus;
-import com.cs7cs3.JourneySharing.entities.Journey.UserStatus;
+import com.cs7cs3.JourneySharing.entities.JourneyStatus;
+import com.cs7cs3.JourneySharing.entities.UserStatus;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -15,10 +15,10 @@ import org.springframework.data.repository.query.Param;
 
 public interface JourneyRepository extends JpaRepository<Journey, String> {
 
-  @Query(value = "SELECT `journey_id` FROM cs7cs3.journey_members WHERE user_id = :userId", nativeQuery = true)
+  @Query(value = "SELECT `journey_id` FROM cs7cs3.journey_members WHERE user_id = :userId AND status != 3", nativeQuery = true)
   public String getJourneyIdByUserId(@Param("userId") String userId);
 
-  @Query(value = "SELECT `id` FROM cs7cs3.journey WHERE host = :hostId", nativeQuery = true)
+  @Query(value = "SELECT `id` FROM cs7cs3.journey WHERE host = :hostId AND status != 2", nativeQuery = true)
   public String getJourneyIdByHostId(@Param("hostId") String hostId);
 
   @Query(value = "SELECT `status` FROM cs7cs3.journey WHERE (`id` = :journeyId)", nativeQuery = true)
@@ -35,11 +35,11 @@ public interface JourneyRepository extends JpaRepository<Journey, String> {
             FROM
                 cs7cs3.journey_members
             WHERE
-                user_id = :userId))
+                user_id = :userId AND status != 3))
       """, nativeQuery = true)
   public JourneyStatus getJourneyStatusByUserId(@Param("userId") String userId);
 
-  @Query(value = "SELECT `status` FROM cs7cs3.journey_members WHERE user_id = :userId", nativeQuery = true)
+  @Query(value = "SELECT `status` FROM cs7cs3.journey_members WHERE user_id = :userId AND status != 3", nativeQuery = true)
   public UserStatus getUserStatusByUserId(@Param("userId") String userId);
 
   @Modifying
@@ -50,7 +50,7 @@ public interface JourneyRepository extends JpaRepository<Journey, String> {
 
   @Modifying
   @Transactional
-  @Query(value = "DELETE FROM `cs7cs3`.`journey_members` WHERE (`user_id` = :userId)", nativeQuery = true)
+  @Query(value = "DELETE FROM `cs7cs3`.`journey_members` WHERE (`user_id` = :userId AND status != 3)", nativeQuery = true)
   public int exit(@Param("userId") String userId);
 
   @Query(value = "SELECT * FROM cs7cs3.journey WHERE (created_time > :ts and end_time = -1)", nativeQuery = true)
@@ -61,7 +61,7 @@ public interface JourneyRepository extends JpaRepository<Journey, String> {
 
   @Modifying
   @Transactional
-  @Query(value = "UPDATE cs7cs3.journey_members SET journey_members.status = :status WHERE user_id = :userId", nativeQuery = true)
+  @Query(value = "UPDATE cs7cs3.journey_members SET journey_members.status = :status WHERE user_id = :userId AND status != 3", nativeQuery = true)
   public void setUserStatus(@Param("userId") String userId, @Param("status") int status);
 
   @Modifying
@@ -75,7 +75,8 @@ public interface JourneyRepository extends JpaRepository<Journey, String> {
   public void setJourneyStatus(@Param("journeyId") String journeyId, @Param("status") int status);
 
   @Query(value = "SELECT status FROM cs7cs3.journey_members WHERE journey_id = :journeyId", nativeQuery = true)
-  public List<UserStatus> getUserStatusByJourneyId(@Param("journeyId") String journeyId);
+  public List<UserStatus> getUserStatusByJourneyId(
+      @Param("journeyId") String journeyId);
 
   @Query(value = "SELECT user_id FROM cs7cs3.journey_members WHERE journey_id = :journeyId", nativeQuery = true)
   public List<String> getUserIdByJourneyId(@Param("journeyId") String journeyId);
@@ -83,7 +84,7 @@ public interface JourneyRepository extends JpaRepository<Journey, String> {
   @Query(value = "SELECT user_id FROM cs7cs3.journey_members WHERE journey_id = :journeyId AND status = :status", nativeQuery = true)
   public List<String> getUserIdByJourneyIdAndStatus(@Param("journeyId") String journeyId, @Param("status") int status);
 
-  @Query(value = "SELECT journey_id FROM cs7cs3.journey_members WHERE user_id = :userId LIMIT :len OFFSET :from ", nativeQuery = true)
+  @Query(value = "SELECT journey_id FROM cs7cs3.journey_members WHERE user_id = :userId AND status != 3 LIMIT :len OFFSET :from ", nativeQuery = true)
   public List<String> findJourneyIdByUserId(@Param("userId") String userId, @Param("from") int from,
       @Param("len") int len);
 

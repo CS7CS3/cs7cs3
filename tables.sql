@@ -103,7 +103,6 @@ CREATE TABLE `journey_members` (
   `journey_id` varchar(255) NOT NULL DEFAULT '',
   `user_id` varchar(255) NOT NULL DEFAULT '',
   `status` int(11) NOT NULL DEFAULT 0,
-  UNIQUE KEY `98dd5112-e277-4c48-88e3-242c2157a34e` (`user_id`),
   KEY `0bd04255-628a-415f-84a4-02073e5cdfd1` (`journey_id`),
   CONSTRAINT `0bd04255-628a-415f-84a4-02073e5cdfd1` FOREIGN KEY (`journey_id`) REFERENCES `journey` (`id`) ON DELETE CASCADE,
   CONSTRAINT `6197e6a4-8888-4fcc-b638-8cc88ed732d1` FOREIGN KEY (`user_id`) REFERENCES `account` (`id`) ON DELETE CASCADE

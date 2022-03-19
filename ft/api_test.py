@@ -178,7 +178,7 @@ def test_approve_join_alice():
   url = "http://localhost:8080/journey/get-unapproved"
 
   payload = json.dumps({
-      "token": "d0d5ba42-ca57-4ab4-858c-19aed5a22e4b",
+      "token": tokens["alice"],
       "timestamp": timestamp()
   })
   headers = {
@@ -197,7 +197,7 @@ def test_approve_join_alice():
         "token": tokens["alice"],
         "timestamp": timestamp(),
         "payload": {
-            "userId": "c61448b6-537b-5a93-f97a-b7364dc45106"
+            "userId": userId
         }
     })
     headers = {
@@ -257,6 +257,177 @@ def test_get_message_bob():
 
   assert data["success"] == True, data["reason"]
   assert data["payload"]["messages"][0]["content"] == "hello,world"
+
+
+def test_confirm_arrive_alice():
+  url = "http://localhost:8080/journey/confirm-arrive"
+
+  payload = json.dumps({
+      "token": tokens["alice"],
+      "timestamp": timestamp()
+  })
+
+  headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Basic PEJhc2ljIEF1dGggVXNlcm5hbWU+OjxCYXNpYyBBdXRoIFBhc3N3b3JkPg=='
+  }
+
+  response = requests.request("POST", url, headers=headers, data=payload)
+  data = json.loads(response.text)
+
+  assert data["success"] == True, data["reason"]
+
+
+def test_confirm_arrive_bob():
+  url = "http://localhost:8080/journey/confirm-arrive"
+
+  payload = json.dumps({
+      "token": tokens["bob"],
+      "timestamp": timestamp()
+  })
+
+  headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Basic PEJhc2ljIEF1dGggVXNlcm5hbWU+OjxCYXNpYyBBdXRoIFBhc3N3b3JkPg=='
+  }
+
+  response = requests.request("POST", url, headers=headers, data=payload)
+  data = json.loads(response.text)
+
+  assert data["success"] == True, data["reason"]
+
+
+def test_create_journey_bob():
+  url = "http://localhost:8080/journey/create"
+
+  payload = json.dumps({
+      "token": tokens["bob"],
+      "timestamp": timestamp(),
+      "payload": {
+          "from": {
+              "latitude": -18077544.679667488,
+              "longitude": -75077956.63059595
+          },
+          "to": {
+              "latitude": -66335255.51463202,
+              "longitude": 63560453.682985514
+          }
+      }
+  })
+
+  headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Basic PEJhc2ljIEF1dGggVXNlcm5hbWU+OjxCYXNpYyBBdXRoIFBhc3N3b3JkPg=='
+  }
+
+  response = requests.request("POST", url, headers=headers, data=payload)
+  data = json.loads(response.text)
+
+  assert data["success"] == True, data["reason"]
+  journeys["bob"] = data["payload"]["id"]
+
+
+def test_join_journey_alice():
+  url = "http://localhost:8080/journey/join"
+
+  payload = json.dumps({
+      "token": tokens["alice"],
+      "timestamp": timestamp(),
+      "payload": {
+          "journeyId": journeys["bob"]
+      }
+  })
+  headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Basic PEJhc2ljIEF1dGggVXNlcm5hbWU+OjxCYXNpYyBBdXRoIFBhc3N3b3JkPg=='
+  }
+
+  response = requests.request("POST", url, headers=headers, data=payload)
+  data = json.loads(response.text)
+
+  assert data["success"] == True, data["reason"]
+
+
+def test_approve_join_bob():
+  url = "http://localhost:8080/journey/get-unapproved"
+
+  payload = json.dumps({
+      "token": tokens["bob"],
+      "timestamp": timestamp()
+  })
+  headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Basic PEJhc2ljIEF1dGggVXNlcm5hbWU+OjxCYXNpYyBBdXRoIFBhc3N3b3JkPg=='
+  }
+
+  response = requests.request("POST", url, headers=headers, data=payload)
+  data = json.loads(response.text)
+
+  for userId in data["payload"]["userIds"]:
+    url = "http://localhost:8080/journey/approve-join"
+
+    payload = json.dumps({
+        "token": tokens["alice"],
+        "timestamp": timestamp(),
+        "payload": {
+            "userId": userId
+        }
+    })
+    headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Basic PEJhc2ljIEF1dGggVXNlcm5hbWU+OjxCYXNpYyBBdXRoIFBhc3N3b3JkPg=='
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+    data = json.loads(response.text)
+
+    assert data["success"] == True, data["reason"]
+
+
+def test_confirm_arrive_alice_again():
+  url = "http://localhost:8080/journey/confirm-arrive"
+
+  payload = json.dumps({
+      "token": tokens["alice"],
+      "timestamp": timestamp()
+  })
+
+  headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Basic PEJhc2ljIEF1dGggVXNlcm5hbWU+OjxCYXNpYyBBdXRoIFBhc3N3b3JkPg=='
+  }
+
+  response = requests.request("POST", url, headers=headers, data=payload)
+  data = json.loads(response.text)
+
+  assert data["success"] == True, data["reason"]
+
+
+def test_confirm_arrive_bob_again():
+  url = "http://localhost:8080/journey/confirm-arrive"
+
+  payload = json.dumps({
+      "token": tokens["bob"],
+      "timestamp": timestamp()
+  })
+
+  headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Basic PEJhc2ljIEF1dGggVXNlcm5hbWU+OjxCYXNpYyBBdXRoIFBhc3N3b3JkPg=='
+  }
+
+  response = requests.request("POST", url, headers=headers, data=payload)
+  data = json.loads(response.text)
+
+  assert data["success"] == True, data["reason"]
 
 
 def main():

@@ -56,33 +56,6 @@ public class Journey extends Validatable {
     return journey;
   }
 
-  public enum JourneyStatus {
-    Waiting, Travelling, End;
-
-    private static JourneyStatus[] values = null;
-
-    public static JourneyStatus cast(int i) {
-      if (values == null) {
-        values = JourneyStatus.values();
-      }
-      return values[i];
-    }
-  }
-
-
-  public enum UserStatus {
-    PendingApproval, Waiting, Travelling, Arrived;
-
-    private static UserStatus[] values = null;
-
-    public static UserStatus cast(int i) {
-      if (values == null) {
-        values = UserStatus.values();
-      }
-      return values[i];
-    }
-  }
-
   @Embeddable
   public static class JourneyMember {
     public static JourneyMember make(String userId, UserStatus status) {

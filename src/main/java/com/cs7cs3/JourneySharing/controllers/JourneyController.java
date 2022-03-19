@@ -6,9 +6,8 @@ import java.util.Comparator;
 import com.cs7cs3.JourneySharing.db.JourneyRepository;
 import com.cs7cs3.JourneySharing.db.UserInfoRepository;
 import com.cs7cs3.JourneySharing.entities.Journey;
-import com.cs7cs3.JourneySharing.entities.Journey.JourneyStatus;
-import com.cs7cs3.JourneySharing.entities.Journey.UserStatus;
-import com.cs7cs3.JourneySharing.entities.base.Empty;
+import com.cs7cs3.JourneySharing.entities.JourneyStatus;
+import com.cs7cs3.JourneySharing.entities.UserStatus;
 import com.cs7cs3.JourneySharing.entities.messages.Request;
 import com.cs7cs3.JourneySharing.entities.messages.Response;
 import com.cs7cs3.JourneySharing.entities.messages.journey.ApproveJoinRequest;
@@ -37,7 +36,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -75,20 +73,21 @@ public class JourneyController {
 
   @PostMapping("/confirm-arrive")
   public Response<ConfirmArriveResponse> confirmArrive(@RequestBody Request<ConfirmArriveRequest> req) {
-    var res = req.test();
-    if (res.right.isPresent()) {
-      return Response.makeError(res.right.get());
+    var res = req.testIgnorePayloadCheck();
+    if (res.isPresent()) {
+      return Response.makeError(res.get());
     }
-    var payload = res.left;
 
-    var status = journeyRepository.getUserStatusByUserId(payload.userId);
+    var uid = Utils.getIdByToken(req.token);
+
+    var status = journeyRepository.getUserStatusByUserId(uid);
     if (status != UserStatus.Travelling) {
       Response.makeError("user does not in travelling, cannot 'arrive'");
     }
 
-    journeyRepository.setUserStatus(payload.userId, UserStatus.Arrived.ordinal());
+    journeyRepository.setUserStatus(uid, UserStatus.Arrived.ordinal());
 
-    var journeyId = journeyRepository.getJourneyIdByUserId(payload.userId);
+    var journeyId = journeyRepository.getJourneyIdByUserId(uid);
     var allUserStatus = journeyRepository.getUserStatusByJourneyId(journeyId);
     boolean allArrived = true;
     for (UserStatus _status : allUserStatus) {
@@ -282,65 +281,32 @@ public class JourneyController {
     return Response.make(Utils.nextToken(req.token), GetUnapprovedUsersResponse.make(userIds));
   }
 
-  @PostMapping("{id}/update1")
-  @Deprecated
-  public Response<Empty> updateJourneyStatus1(@PathVariable("id") String id, @RequestBody Request<Empty> req) {
-    logger.info(req.toString());
-    if (!req.validate()) {
-      return Response.makeError("request validation failed");
-    }
-
-    if (!Utils.validateToken(req.token)) {
-      return Response.makeError("token validation failed");
-    }
-
-    // empty payload, early reject
-    if (!req.payload.isPresent()) {
-      return Response.makeError("empty payload");
-    }
-
-    // schema validation
-    if (!req.payload.get().validate()) {
-      return Response.makeError("payload schema validation failed");
-    }
-
-    var check_endtime = journeyRepository.findById(id);
-    long time1 = check_endtime.get().createdTime;
-    var time3 = System.currentTimeMillis() / 1000;
-    var s = check_endtime.get().status;
-    if (time1 + 1200 < time3 && !s.equals(Journey.JourneyStatus.End)) {
-      check_endtime.get().status = Journey.JourneyStatus.End;
-      journeyRepository.save(check_endtime.get());
-      System.out.println("Update");
-      // return Response.make(Utils.nextToken(req.token));
-    } else {
-      System.out.println("F");
-    }
-    return Response.make(Utils.nextToken(req.token));
-  }
-
-  @PostMapping("/history")
-  public Response<GetHistoryResponse> get(@RequestBody Request<GetHistoryRequest> req) {
+  @PostMapping("/get-history")
+  public Response<GetHistoryResponse> getHistory(@RequestBody Request<GetHistoryRequest> req) {
     var testRes = req.test();
     if (testRes.right.isPresent()) {
       return Response.makeError(testRes.right.get());
     }
 
     var payload = testRes.left;
-    var res1 = journeyRepository.findJourneyIdByUserId(payload.userId, payload.from, payload.len);
-    System.out.println(res1);
-    if (res1.isEmpty() || res1 == null) {
-      return Response.makeError("history does not exist 1");
-    }
-    for (String r : res1) {
-      var res2 = journeyRepository.findById(r);
-      if (res2.isEmpty() || res2 == null) {
-        return Response.makeError("history does not exist 2");
-      }
-      return Response.make(Utils.nextToken(req.token), GetHistoryResponse.make(res2));
+
+    var uid = Utils.getIdByToken(req.token);
+
+    var journeyIds = journeyRepository.findJourneyIdByUserId(uid, payload.from, payload.len);
+    if (journeyIds == null || journeyIds.isEmpty()) {
+      return Response.makeError("history does not exist");
     }
 
-    return Response.makeError("history does not exist 3");
+    var result = new ArrayList<Journey>();
+    for (String jid : journeyIds) {
+      var journey = journeyRepository.findById(jid);
+      if (journey == null || journey.isEmpty()) {
+        return Response.makeError("journey does not exist");
+      }
+      result.add(journey.get());
+    }
+
+    return Response.make(Utils.nextToken(req.token), GetHistoryResponse.make(result));
   }
 
 }
