@@ -37,4 +37,9 @@ public class Message extends Validatable {
   public String receiver;
   public String content;
   public long timestamp;
+
+  @Override
+  public boolean validate() {
+    return id != "";
+  }
 }

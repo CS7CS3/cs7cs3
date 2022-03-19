@@ -138,7 +138,7 @@ DROP TABLE IF EXISTS `user_info`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_info` (
   `id` varchar(255) NOT NULL,
-  `avatar_url` text NOT NULL DEFAULT '',
+  `avatar` text NOT NULL DEFAULT '',
   `bio` text NOT NULL DEFAULT '',
   `rating` double NOT NULL DEFAULT 0,
   `username` varchar(255) NOT NULL DEFAULT '',

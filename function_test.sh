@@ -1,2 +1,3 @@
 #!env bash
-pytest -v ./ft
+
+bash ./ft/function_test.sh

@@ -85,9 +85,10 @@ public class JourneyController {
       Response.makeError("user does not in travelling, cannot 'arrive'");
     }
 
+    var journeyId = journeyRepository.getJourneyIdByUserId(uid);
+
     journeyRepository.setUserStatus(uid, UserStatus.Arrived.ordinal());
 
-    var journeyId = journeyRepository.getJourneyIdByUserId(uid);
     var allUserStatus = journeyRepository.getUserStatusByJourneyId(journeyId);
     boolean allArrived = true;
     for (UserStatus _status : allUserStatus) {
@@ -234,13 +235,13 @@ public class JourneyController {
 
   @PostMapping("/start")
   public Response<StartJourneyResponse> start(@RequestBody Request<StartJourneyRequest> req) {
-    var res = req.test();
-    if (res.right.isPresent()) {
-      return Response.makeError(res.right.get());
+    var res = req.testIgnorePayloadCheck();
+    if (res.isPresent()) {
+      return Response.makeError(res.get());
     }
-    var payload = res.left;
+    var uid = Utils.getIdByToken(req.token);
 
-    var journeyId = journeyRepository.getJourneyIdByHostId(payload.hostId);
+    var journeyId = journeyRepository.getJourneyIdByHostId(uid);
     if (journeyId == null) {
       return Response.makeError("cannot find journey");
     }

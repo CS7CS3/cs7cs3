@@ -16,4 +16,5 @@ public class Location extends Validatable {
     return Math.pow((this.latitude - x.latitude), 2)
         + Math.pow((this.longitude - x.longitude), 2);
   }
+
 }

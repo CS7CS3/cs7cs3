@@ -29,13 +29,13 @@ public class UserInfo extends Validatable {
     return userInfo;
   }
 
-  public static UserInfo make(String id, String username, String avatarUrl, String boi) {
+  public static UserInfo make(String id, String username, String avatar, String bio) {
     UserInfo userInfo = new UserInfo();
 
     userInfo.id = id;
     userInfo.username = username;
-    userInfo.avatarUrl = avatarUrl;
-    userInfo.bio = boi;
+    userInfo.avatar = avatar;
+    userInfo.bio = bio;
 
     return userInfo;
   }
@@ -43,7 +43,7 @@ public class UserInfo extends Validatable {
   @Id
   public String id = "";
   public String username = "";
-  public String avatarUrl = "";
+  public String avatar = "";
   public String bio = "";
   public double rating = 0.0;
 
@@ -56,4 +56,9 @@ public class UserInfo extends Validatable {
   @ElementCollection
   @CollectionTable(joinColumns = @JoinColumn(name = "user_id"))
   public List<String> histories = new ArrayList<String>();
+
+  @Override
+  public boolean validate() {
+    return id != "";
+  }
 }

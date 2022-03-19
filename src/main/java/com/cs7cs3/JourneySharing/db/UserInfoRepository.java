@@ -22,4 +22,7 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, String> {
     @Transactional
     @Query(value = "INSERT INTO `cs7cs3`.`user_info_histories` (`user_id`, `journey_id`) VALUES (:userId, :journeyId);", nativeQuery = true)
     public void addHistory(@Param("userId") String userId, @Param("journeyId") String journeyId);
+
+    @Query(value = "SELECT avatar FROM cs7cs3.user_info WHERE id= :userId", nativeQuery = true)
+    public String getAvatar(@Param("userId") String userId);
 }

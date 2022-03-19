@@ -1,83 +1,6 @@
 #!env python3
 
-import json
-import os
-import subprocess
-import time
-
-import pytest
-import requests
-
-# ============= configs =============
-mysql_user = "root"
-mysql_passwd = "root"
-# =========== end configs ===========
-
-
-# ============= global =============
-tokens = dict()
-userIds = dict()
-journeys = dict()
-# =========== end global ===========
-
-
-def timestamp():
-  return int(time.time())
-
-
-def get_uid(name):
-  res = subprocess.check_output(
-      f"mysql -uroot -proot --disable-column-names  -Be \"SELECT id FROM cs7cs3.user_info WHERE username = '{name}'\"", shell=True)
-  uid = res.decode("utf-8")
-
-  return uid.strip()
-
-
-def test_init_env():
-  """reset database"""
-  os.system(f"mysql -u{mysql_user} -p{mysql_passwd} < tables.sql")
-
-
-def test_register_alice():
-  url = "http://localhost:8080/register"
-
-  payload = json.dumps({
-      "username": "alice",
-      "password": "4mxeopYEdadsklDCJzHyK",
-      "timestamp": timestamp()
-  })
-  headers = {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Basic PEJhc2ljIEF1dGggVXNlcm5hbWU+OjxCYXNpYyBBdXRoIFBhc3N3b3JkPg=='
-  }
-
-  response = requests.request("POST", url, headers=headers, data=payload)
-  data = json.loads(response.text)
-
-  assert data["success"] == True, data["reason"]
-  userIds["alice"] = get_uid("alice")
-
-
-def test_register_bob():
-  url = "http://localhost:8080/register"
-
-  payload = json.dumps({
-      "username": "bob",
-      "password": "4mxeopYEdwhDCJzHyK",
-      "timestamp": timestamp()
-  })
-  headers = {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Basic PEJhc2ljIEF1dGggVXNlcm5hbWU+OjxCYXNpYyBBdXRoIFBhc3N3b3JkPg=='
-  }
-
-  response = requests.request("POST", url, headers=headers, data=payload)
-  data = json.loads(response.text)
-
-  assert data["success"] == True, data["reason"]
-  userIds["bob"] = get_uid("bob")
+from ft_config import *
 
 
 def test_login_alice():
@@ -212,16 +135,12 @@ def test_approve_join_alice():
     assert data["success"] == True, data["reason"]
 
 
-def test_send_message_alice():
-  url = "http://localhost:8080/message/send"
+def test_start_journey_alice():
+  url = "http://localhost:8080/journey/start"
 
   payload = json.dumps({
       "token": tokens["alice"],
-      "timestamp": timestamp(),
-      "payload": {
-          "receiver": userIds["bob"],
-          "content": "hello,world"
-      }
+      "timestamp": timestamp()
   })
   headers = {
       'Content-Type': 'application/json',
@@ -233,30 +152,6 @@ def test_send_message_alice():
   data = json.loads(response.text)
 
   assert data["success"] == True, data["reason"]
-
-
-def test_get_message_bob():
-  url = "http://localhost:8080/message/get"
-
-  payload = json.dumps({
-      "token": tokens["bob"],
-      "timestamp": timestamp(),
-      "payload": {
-          "from": 0,
-          "len": 999999999
-      }
-  })
-  headers = {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Basic PEJhc2ljIEF1dGggVXNlcm5hbWU+OjxCYXNpYyBBdXRoIFBhc3N3b3JkPg=='
-  }
-
-  response = requests.request("POST", url, headers=headers, data=payload)
-  data = json.loads(response.text)
-
-  assert data["success"] == True, data["reason"]
-  assert data["payload"]["messages"][0]["content"] == "hello,world"
 
 
 def test_confirm_arrive_alice():
@@ -390,6 +285,25 @@ def test_approve_join_bob():
     assert data["success"] == True, data["reason"]
 
 
+def test_start_journey_bob():
+  url = "http://localhost:8080/journey/start"
+
+  payload = json.dumps({
+      "token": tokens["bob"],
+      "timestamp": timestamp()
+  })
+  headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Basic PEJhc2ljIEF1dGggVXNlcm5hbWU+OjxCYXNpYyBBdXRoIFBhc3N3b3JkPg=='
+  }
+
+  response = requests.request("POST", url, headers=headers, data=payload)
+  data = json.loads(response.text)
+
+  assert data["success"] == True, data["reason"]
+
+
 def test_confirm_arrive_alice_again():
   url = "http://localhost:8080/journey/confirm-arrive"
 
@@ -428,11 +342,3 @@ def test_confirm_arrive_bob_again():
   data = json.loads(response.text)
 
   assert data["success"] == True, data["reason"]
-
-
-def main():
-  pass
-
-
-if __name__ == "__main__":
-  main()

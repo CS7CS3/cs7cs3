@@ -1,5 +1,7 @@
 package com.cs7cs3.JourneySharing.controllers;
 
+import java.util.Base64;
+
 import javax.transaction.Transactional;
 
 import com.cs7cs3.JourneySharing.db.UserInfoRepository;
@@ -7,67 +9,56 @@ import com.cs7cs3.JourneySharing.entities.UserInfo;
 import com.cs7cs3.JourneySharing.entities.messages.Request;
 import com.cs7cs3.JourneySharing.entities.messages.Response;
 import com.cs7cs3.JourneySharing.entities.messages.UpdateUserInfoRequest;
+import com.cs7cs3.JourneySharing.entities.messages.user_info.GetAvatarRequest;
+import com.cs7cs3.JourneySharing.entities.messages.user_info.GetProfileRequest;
+import com.cs7cs3.JourneySharing.entities.messages.user_info.GetProfileResponse;
 import com.cs7cs3.JourneySharing.utils.Utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/user_info")
+@RequestMapping("/user-info")
 public class UserInfoController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    private UserInfoRepository repository;
+    private UserInfoRepository userInfoRepository;
 
-    @GetMapping("/{id}")
-    public Response<UserInfo> get(@PathVariable("id") String id, @RequestParam("token") String token) {
-
-        if (!Utils.validateToken(token)) {
-            return Response.makeError("token validation failed");
+    @PostMapping("get-profile")
+    public Response<GetProfileResponse> getProfile(@RequestBody Request<GetProfileRequest> req) {
+        var res = req.test();
+        if (res.right.isPresent()) {
+            return Response.makeError(res.right.get());
         }
+        var payload = res.left;
 
-        var res = repository.findById(id);
-        System.out.println(res);
-
-        if (!res.isPresent()) {
+        var userInfo = userInfoRepository.findById(payload.userId);
+        if (userInfo.isEmpty()) {
             return Response.makeError("user does not exist");
         }
 
-        return Response.make(Utils.nextToken(token), res.get());
+        return Response.make(Utils.nextToken(req.token), GetProfileResponse.make(userInfo.get()));
     }
 
-    @GetMapping("/{id}/ava")
-    public Response<String> getAva(@PathVariable("id") String id, @RequestParam("token") String token) {
-
-        if (!Utils.validateToken(token)) {
-            return Response.makeError("token validation failed");
+    @PostMapping(value = "get-avatar", produces = MediaType.IMAGE_JPEG_VALUE)
+    public byte[] getAvatar(@RequestBody Request<GetAvatarRequest> req) {
+        var res = req.test();
+        if (res.right.isPresent()) {
+            return null;
         }
+        var payload = res.left;
 
-        var res = repository.findById(id);
+        var b64Avatar = userInfoRepository.getAvatar(payload.userId);
 
-        System.out.println(res);
-
-        if (!res.isPresent()) {
-            return Response.makeError("user does not exist");
-        }
-
-        else {
-
-            // base64 validation
-
-            var ava = res.get().avatarUrl;
-            return Response.make(Utils.nextToken(token), ava);
-        }
-
+        return Base64.getDecoder().decode(b64Avatar);
     }
 
     @PostMapping("/update/{id}")
@@ -75,32 +66,18 @@ public class UserInfoController {
     public Response<UserInfo> updateUserInfo(@PathVariable String id, @RequestBody Request<UpdateUserInfoRequest> req) {
         logger.info(req.toString());
 
-        if (!req.validate()) {
-            return Response.makeError("request validation failed");
+        var res = req.test();
+        if (res.right.isPresent()) {
+            return Response.makeError(res.right.get());
         }
-
-        if (!Utils.validateToken(req.token)) {
-            logger.error("?");
-            return Response.makeError("token validation failed");
-        }
-
-        if (!req.payload.isPresent()) {
-            return Response.makeError("payload does not exist");
-        }
-
-        var payload = req.payload.get();
-
-        if (!payload.validate()) {
-            return Response.makeError("payload validation failed");
-        }
+        var payload = res.left;
 
         var un = payload.username;
-        var ava = payload.avatarUrl;
+        var ava = payload.avatar;
         var b = payload.boi;
         var userinfo = UserInfo.make(id, un, ava, b);
 
-        System.out.println(userinfo);
-        repository.save(userinfo);
+        userInfoRepository.save(userinfo);
 
         return Response.make(Utils.nextToken(req.token), userinfo);
 

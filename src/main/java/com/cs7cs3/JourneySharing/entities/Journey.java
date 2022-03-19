@@ -96,4 +96,8 @@ public class Journey extends Validatable {
   @ElementCollection
   public List<JourneyMember> members = new ArrayList<JourneyMember>();
 
+  @Override
+  public boolean validate() {
+    return id != "";
+  }
 }

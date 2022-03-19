@@ -6,11 +6,14 @@ import lombok.Data;
 
 @Data
 public class LoginResponse extends Validatable {
-    public static LoginResponse make() {
-        return null;
+    public static LoginResponse make(String userId) {
+        return new LoginResponse(userId);
     }
 
-    private LoginResponse() {
+    private LoginResponse(String userId) {
+        this.userId = userId;
     }
+
+    public String userId;
 
 }

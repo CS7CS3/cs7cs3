@@ -6,5 +6,5 @@ import lombok.Data;
 
 @Data
 public class StartJourneyRequest extends Validatable {
-  public String hostId;
+
 }

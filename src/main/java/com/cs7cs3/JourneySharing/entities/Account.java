@@ -37,4 +37,9 @@ public class Account extends Validatable {
   public String id = "";
   public String password = "";
 
+  @Override
+  public boolean validate() {
+    return id != "" && password != "";
+  }
+
 }

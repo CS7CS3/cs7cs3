@@ -45,7 +45,7 @@ public class LoginController {
 
     String id = userInfoRepository.getIdByUsername(req.username);
 
-    return Response.make(Utils.makeToken(id), LoginResponse.make());
+    return Response.make(Utils.makeToken(id), LoginResponse.make(id));
   }
 
 }

@@ -34,4 +34,8 @@ public class UserReview extends Validatable {
   public double rating = 0.0;
   public String content = "";
 
+  @Override
+  public boolean validate() {
+    return id != "";
+  }
 }

@@ -218,9 +218,8 @@ components:
     Token:
       type: string
       pattern: "^[A-Za-z0-9_]{8,30}$"
-    AvatarUrl:
+    Avatar:
       type: string
-      format: url
     Location:
       type: object
       properties:
@@ -286,8 +285,8 @@ components:
       properties:
         userId:
           "$ref": "#/components/schemas/UserId"
-        avatarUrl:
-          "$ref": "#/components/schemas/AvatarUrl"
+        avatar:
+          "$ref": "#/components/schemas/Avatar"
         bio:
           type: string
           maxLength: 100
@@ -306,8 +305,8 @@ components:
       properties:
         userId:
           "$ref": "#/components/schemas/UserId"
-        avatarUrl:
-          "$ref": "#/components/schemas/AvatarUrl"
+        avatar:
+          "$ref": "#/components/schemas/Avatar"
         rating:
           "$ref": "#/components/schemas/Rating"
     Review:
