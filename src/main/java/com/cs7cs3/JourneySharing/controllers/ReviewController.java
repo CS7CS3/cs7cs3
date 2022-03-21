@@ -56,8 +56,16 @@ public class ReviewController {
     }
     var payload = res.left;
 
-    var review = UserReview.make(payload.userId, payload.revieweeId, payload.rating, payload.content);
+    var u = repository.findById(payload.userId);
+    var c = u.get().counter + 1;
+    var o_r = u.get().rating;
+    var n_r = (u.get().counter * o_r +payload.rating) / c;
+
+    var review = UserReview.make(payload.userId, payload.revieweeId, n_r, payload.content, c);
     logger.info(review.toString());
+
+    System.out.println(c);
+
     repository.save(review);
 
     return Response.make(Utils.nextToken(req.token), CreateReviewResponse.make(review));

@@ -141,6 +141,7 @@ CREATE TABLE `user_info` (
   `avatar` text NOT NULL DEFAULT '',
   `bio` text NOT NULL DEFAULT '',
   `rating` double NOT NULL DEFAULT 0,
+  `counter` integer NOT NULL DEFAULT 0,
   `username` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   UNIQUE KEY `856270d8-03e4-4485-b2ec-74f3a9723067` (`username`),
