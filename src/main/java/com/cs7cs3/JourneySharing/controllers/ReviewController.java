@@ -3,6 +3,8 @@ package com.cs7cs3.JourneySharing.controllers;
 import javax.transaction.Transactional;
 
 import com.cs7cs3.JourneySharing.db.ReviewRepository;
+import com.cs7cs3.JourneySharing.db.UserInfoRepository;
+import com.cs7cs3.JourneySharing.entities.UserInfo;
 import com.cs7cs3.JourneySharing.entities.UserReview;
 import com.cs7cs3.JourneySharing.entities.messages.Request;
 import com.cs7cs3.JourneySharing.entities.messages.Response;
@@ -28,6 +30,8 @@ public class ReviewController {
 
   @Autowired
   private ReviewRepository repository;
+  @Autowired
+  private UserInfoRepository userInfoRepository;
 
   @PostMapping("/get-by-userid")
   public Response<GetReviewByUserIdResponse> get(@RequestBody Request<GetReviewByUserIdRequest> req) {
@@ -56,16 +60,17 @@ public class ReviewController {
     }
     var payload = res.left;
 
-    var u = repository.findById(payload.userId);
+    var u = userInfoRepository.findById(payload.userId);
     var c = u.get().counter + 1;
     var o_r = u.get().rating;
     var n_r = (u.get().counter * o_r +payload.rating) / c;
 
-    var review = UserReview.make(payload.userId, payload.revieweeId, n_r, payload.content, c);
+    var review = UserReview.make(payload.userId, payload.revieweeId,payload.rating, payload.content);
     logger.info(review.toString());
 
-    System.out.println(c);
+    var userInfo = UserInfo.makeRating(n_r);
 
+    userInfoRepository.save(userInfo);
     repository.save(review);
 
     return Response.make(Utils.nextToken(req.token), CreateReviewResponse.make(review));

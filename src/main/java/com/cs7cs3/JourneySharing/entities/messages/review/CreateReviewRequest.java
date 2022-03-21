@@ -12,5 +12,5 @@ public class CreateReviewRequest extends Validatable {
   public double rating = 0.0f;
   public String content = "";
   public boolean anonymous = true;
-  public int counter = 0;
+
 }

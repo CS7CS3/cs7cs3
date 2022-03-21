@@ -9,4 +9,5 @@ public class UpdateUserInfoRequest extends Validatable {
     public String username = "";
     public String avatar = "";
     public String boi = "";
+    public int counter = 0;
 }

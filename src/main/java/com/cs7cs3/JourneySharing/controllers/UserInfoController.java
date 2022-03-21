@@ -75,6 +75,7 @@ public class UserInfoController {
         var un = payload.username;
         var ava = payload.avatar;
         var b = payload.boi;
+
         var userinfo = UserInfo.make(id, un, ava, b);
 
         userInfoRepository.save(userinfo);

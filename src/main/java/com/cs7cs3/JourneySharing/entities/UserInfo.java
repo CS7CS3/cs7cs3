@@ -40,12 +40,21 @@ public class UserInfo extends Validatable {
     return userInfo;
   }
 
+  public static UserInfo makeRating(double rating) {
+    UserInfo userInfo = new UserInfo();
+
+    userInfo.rating = rating;
+
+    return userInfo;
+  }
+
   @Id
   public String id = "";
   public String username = "";
   public String avatar = "";
   public String bio = "";
   public double rating = 0.0;
+  public int counter = 0;
 
   @Column(name = "review_id")
   @ElementCollection
