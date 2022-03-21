@@ -40,10 +40,11 @@ public class UserInfo extends Validatable {
     return userInfo;
   }
 
-  public static UserInfo makeRating(double rating) {
+  public static UserInfo makeRating(Integer counter,double rating) {
     UserInfo userInfo = new UserInfo();
 
     userInfo.rating = rating;
+    userInfo.counter = counter;
 
     return userInfo;
   }

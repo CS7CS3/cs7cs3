@@ -68,7 +68,7 @@ public class ReviewController {
     var review = UserReview.make(payload.userId, payload.revieweeId,payload.rating, payload.content);
     logger.info(review.toString());
 
-    var userInfo = UserInfo.makeRating(n_r);
+    var userInfo = UserInfo.makeRating(c,n_r);
 
     userInfoRepository.save(userInfo);
     repository.save(review);
