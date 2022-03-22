@@ -61,9 +61,9 @@ public class UserInfoController {
         return Base64.getDecoder().decode(b64Avatar);
     }
 
-    @PostMapping("/update/{id}")
+    @PostMapping("/update")
     @Transactional
-    public Response<UserInfo> updateUserInfo(@PathVariable String id, @RequestBody Request<UpdateUserInfoRequest> req) {
+    public Response<UserInfo> updateUserInfo(@RequestBody Request<UpdateUserInfoRequest> req) {
         logger.info(req.toString());
 
         var res = req.test();
@@ -76,7 +76,7 @@ public class UserInfoController {
         var ava = payload.avatar;
         var b = payload.boi;
 
-        var userinfo = UserInfo.make(id, un, ava, b);
+        var userinfo = UserInfo.make(payload.id, un, ava, b);
 
         userInfoRepository.save(userinfo);
 

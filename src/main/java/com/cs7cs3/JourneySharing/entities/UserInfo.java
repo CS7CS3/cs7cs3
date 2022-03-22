@@ -40,11 +40,15 @@ public class UserInfo extends Validatable {
     return userInfo;
   }
 
-  public static UserInfo makeRating(Integer counter,double rating) {
+  public static UserInfo makeRating(String id, String username, String avatar, String bio,Integer counter,double rating) {
     UserInfo userInfo = new UserInfo();
 
+    userInfo.id = id;
     userInfo.rating = rating;
     userInfo.counter = counter;
+    userInfo.username = username;
+    userInfo.avatar = avatar;
+    userInfo.bio = bio;
 
     return userInfo;
   }

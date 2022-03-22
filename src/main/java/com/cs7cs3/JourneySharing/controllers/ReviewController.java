@@ -60,18 +60,19 @@ public class ReviewController {
     }
     var payload = res.left;
 
-    var u = userInfoRepository.findById(payload.userId);
-    var c = u.get().counter + 1;
-    var o_r = u.get().rating;
-    var n_r = (u.get().counter * o_r +payload.rating) / c;
-
     var review = UserReview.make(payload.userId, payload.revieweeId,payload.rating, payload.content);
     logger.info(review.toString());
-
-    var userInfo = UserInfo.makeRating(c,n_r);
-
-    userInfoRepository.save(userInfo);
     repository.save(review);
+
+    var u = userInfoRepository.findById(payload.userId);
+
+    var c = u.get().counter + 1; // counter + 1
+    var o_r = u.get().rating; // old rating
+    var n_r = (u.get().counter * o_r +payload.rating) / c; // calculate the new rating
+
+    var userInfo = UserInfo.makeRating(payload.userId,u.get().username,u.get().avatar,u.get().bio,c,n_r);
+    userInfoRepository.save(userInfo);
+
 
     return Response.make(Utils.nextToken(req.token), CreateReviewResponse.make(review));
   }

@@ -6,6 +6,7 @@ import lombok.Data;
 
 @Data
 public class UpdateUserInfoRequest extends Validatable {
+    public String id = "";
     public String username = "";
     public String avatar = "";
     public String boi = "";
