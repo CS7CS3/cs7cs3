@@ -3,13 +3,8 @@
 from ft_config import *
 
 
-def test_init_env():
-  """reset database"""
-  os.system(f"mysql -u{mysql_user} -p{mysql_passwd} < tables.sql")
-
-
-def test_register_alice():
-  url = "http://localhost:8080/register"
+def test_login_alice():
+  url = "http://localhost:8080/login"
 
   payload = json.dumps({
       "username": "alice",
@@ -27,16 +22,18 @@ def test_register_alice():
   data = json.loads(response.text)
 
   assert data["success"] == True, data["reason"]
-  userIds["alice"] = get_uid("alice")
+  tokens["alice"] = data["token"]
 
 
-def test_register_bob():
-  url = "http://localhost:8080/register"
+def test_join_journey_bob():
+  url = "http://localhost:8080/journey/join"
 
   payload = json.dumps({
-      "username": "bob",
-      "password": "4mxeopYEdwhDCJzHyK",
-      "timestamp": timestamp()
+      "token": tokens["alice"],
+      "timestamp": timestamp(),
+      "payload": {
+          "journeyId": rand_uuid()
+      }
   })
   headers = {
       'Content-Type': 'application/json',
@@ -48,5 +45,4 @@ def test_register_bob():
   print(response.text)
   data = json.loads(response.text)
 
-  assert data["success"] == True, data["reason"]
-  userIds["bob"] = get_uid("bob")
+  assert data["success"] == False

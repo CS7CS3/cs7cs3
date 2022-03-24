@@ -2,6 +2,7 @@ import json
 import os
 import subprocess
 import time
+import uuid
 
 import pytest
 import requests
@@ -29,3 +30,7 @@ def get_uid(name):
   uid = res.decode("utf-8")
 
   return uid.strip()
+
+
+def rand_uuid():
+  return str(uuid.uuid4())

@@ -22,7 +22,6 @@ def test_login_alice():
   data = json.loads(response.text)
 
   assert data["success"] == True, data["reason"]
-  userIds["alice"] = data["payload"]["userId"]
   tokens["alice"] = data["token"]
 
 
@@ -45,19 +44,24 @@ def test_login_bob():
   data = json.loads(response.text)
 
   assert data["success"] == True, data["reason"]
-  userIds["bob"] = data["payload"]["userId"]
   tokens["bob"] = data["token"]
 
 
-def test_send_message_alice():
-  url = "http://localhost:8080/message/send"
+def test_create_journey_alice():
+  url = "http://localhost:8080/journey/create"
 
   payload = json.dumps({
       "token": tokens["alice"],
       "timestamp": timestamp(),
       "payload": {
-          "receiver": userIds["bob"],
-          "content": "hello,world"
+          "from": {
+              "latitude": -18077544.679667488,
+              "longitude": -75077956.63059595
+          },
+          "to": {
+              "latitude": -66335255.51463202,
+              "longitude": 63560453.682985514
+          }
       }
   })
   headers = {
@@ -71,17 +75,17 @@ def test_send_message_alice():
   data = json.loads(response.text)
 
   assert data["success"] == True, data["reason"]
+  journeys["alice"] = data["payload"]["id"]
 
 
-def test_get_message_bob():
-  url = "http://localhost:8080/message/get"
+def test_join_journey_bob():
+  url = "http://localhost:8080/journey/join"
 
   payload = json.dumps({
       "token": tokens["bob"],
       "timestamp": timestamp(),
       "payload": {
-          "from": 0,
-          "len": 999999999
+          "journeyId": journeys["alice"]
       }
   })
   headers = {
@@ -95,4 +99,43 @@ def test_get_message_bob():
   data = json.loads(response.text)
 
   assert data["success"] == True, data["reason"]
-  assert data["payload"]["messages"][0]["content"] == "hello,world"
+
+
+def test_approve_join_bob():
+  url = "http://localhost:8080/journey/get-unapproved"
+
+  payload = json.dumps({
+      "token": tokens["bob"],
+      "timestamp": timestamp()
+  })
+  headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Basic PEJhc2ljIEF1dGggVXNlcm5hbWU+OjxCYXNpYyBBdXRoIFBhc3N3b3JkPg=='
+  }
+
+  response = requests.request("POST", url, headers=headers, data=payload)
+  print(response.text)
+  data = json.loads(response.text)
+
+  for userId in data["payload"]["userIds"]:
+    url = "http://localhost:8080/journey/approve-join"
+
+    payload = json.dumps({
+        "token": tokens["alice"],
+        "timestamp": timestamp(),
+        "payload": {
+            "userId": userId
+        }
+    })
+    headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Basic PEJhc2ljIEF1dGggVXNlcm5hbWU+OjxCYXNpYyBBdXRoIFBhc3N3b3JkPg=='
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+    print(response.text)
+    data = json.loads(response.text)
+
+    assert data["success"] == False

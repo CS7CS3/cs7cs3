@@ -18,6 +18,7 @@ def test_login_alice():
   }
 
   response = requests.request("POST", url, headers=headers, data=payload)
+  print(response.text)
   data = json.loads(response.text)
 
   assert data["success"] == True, data["reason"]
@@ -39,6 +40,7 @@ def test_login_bob():
   }
 
   response = requests.request("POST", url, headers=headers, data=payload)
+  print(response.text)
   data = json.loads(response.text)
 
   assert data["success"] == True, data["reason"]
@@ -69,6 +71,7 @@ def test_create_journey_alice():
   }
 
   response = requests.request("POST", url, headers=headers, data=payload)
+  print(response.text)
   data = json.loads(response.text)
 
   assert data["success"] == True, data["reason"]
@@ -92,6 +95,7 @@ def test_join_journey_bob():
   }
 
   response = requests.request("POST", url, headers=headers, data=payload)
+  print(response.text)
   data = json.loads(response.text)
 
   assert data["success"] == True, data["reason"]
@@ -111,6 +115,7 @@ def test_approve_join_alice():
   }
 
   response = requests.request("POST", url, headers=headers, data=payload)
+  print(response.text)
   data = json.loads(response.text)
 
   for userId in data["payload"]["userIds"]:
@@ -130,6 +135,7 @@ def test_approve_join_alice():
     }
 
     response = requests.request("POST", url, headers=headers, data=payload)
+    print(response.text)
     data = json.loads(response.text)
 
     assert data["success"] == True, data["reason"]
@@ -149,6 +155,7 @@ def test_start_journey_alice():
   }
 
   response = requests.request("POST", url, headers=headers, data=payload)
+  print(response.text)
   data = json.loads(response.text)
 
   assert data["success"] == True, data["reason"]
@@ -169,6 +176,7 @@ def test_confirm_arrive_alice():
   }
 
   response = requests.request("POST", url, headers=headers, data=payload)
+  print(response.text)
   data = json.loads(response.text)
 
   assert data["success"] == True, data["reason"]
@@ -189,6 +197,7 @@ def test_confirm_arrive_bob():
   }
 
   response = requests.request("POST", url, headers=headers, data=payload)
+  print(response.text)
   data = json.loads(response.text)
 
   assert data["success"] == True, data["reason"]
@@ -219,6 +228,7 @@ def test_create_journey_bob():
   }
 
   response = requests.request("POST", url, headers=headers, data=payload)
+  print(response.text)
   data = json.loads(response.text)
 
   assert data["success"] == True, data["reason"]
@@ -242,6 +252,7 @@ def test_join_journey_alice():
   }
 
   response = requests.request("POST", url, headers=headers, data=payload)
+  print(response.text)
   data = json.loads(response.text)
 
   assert data["success"] == True, data["reason"]
@@ -261,6 +272,7 @@ def test_approve_join_bob():
   }
 
   response = requests.request("POST", url, headers=headers, data=payload)
+  print(response.text)
   data = json.loads(response.text)
 
   for userId in data["payload"]["userIds"]:
@@ -280,6 +292,7 @@ def test_approve_join_bob():
     }
 
     response = requests.request("POST", url, headers=headers, data=payload)
+    print(response.text)
     data = json.loads(response.text)
 
     assert data["success"] == True, data["reason"]
@@ -299,6 +312,7 @@ def test_start_journey_bob():
   }
 
   response = requests.request("POST", url, headers=headers, data=payload)
+  print(response.text)
   data = json.loads(response.text)
 
   assert data["success"] == True, data["reason"]
@@ -319,6 +333,7 @@ def test_confirm_arrive_alice_again():
   }
 
   response = requests.request("POST", url, headers=headers, data=payload)
+  print(response.text)
   data = json.loads(response.text)
 
   assert data["success"] == True, data["reason"]
@@ -339,6 +354,7 @@ def test_confirm_arrive_bob_again():
   }
 
   response = requests.request("POST", url, headers=headers, data=payload)
+  print(response.text)
   data = json.loads(response.text)
 
   assert data["success"] == True, data["reason"]
