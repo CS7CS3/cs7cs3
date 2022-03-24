@@ -29,7 +29,7 @@ public class ReviewController {
   private Logger logger = LoggerFactory.getLogger(this.getClass());
 
   @Autowired
-  private ReviewRepository repository;
+  private ReviewRepository reviewRepository;
   @Autowired
   private UserInfoRepository userInfoRepository;
 
@@ -41,7 +41,7 @@ public class ReviewController {
     }
     var payload = testRes.left;
 
-    var res = repository.findByUser(payload.userId, payload.from, payload.len);
+    var res = reviewRepository.findByUser(payload.userId, payload.from, payload.len);
     if (res == null) {
       return Response.makeError("review does not exist");
     }
@@ -62,7 +62,7 @@ public class ReviewController {
 
     var review = UserReview.make(payload.userId, payload.revieweeId,payload.rating, payload.content);
     logger.info(review.toString());
-    repository.save(review);
+    reviewRepository.save(review);
 
     var u = userInfoRepository.findById(payload.userId);
 
@@ -73,6 +73,11 @@ public class ReviewController {
     var userInfo = UserInfo.makeRating(payload.userId,u.get().username,u.get().avatar,u.get().bio,c,n_r);
     userInfoRepository.save(userInfo);
 
+    var review_id = review.id;
+    System.out.println(review_id);
+    System.out.println(payload.revieweeId);
+
+    userInfoRepository.addReview(payload.revieweeId,review_id);
 
     return Response.make(Utils.nextToken(req.token), CreateReviewResponse.make(review));
   }

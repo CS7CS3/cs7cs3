@@ -18,8 +18,6 @@ import com.cs7cs3.JourneySharing.entities.messages.journey.CreateJourneyRequest;
 import com.cs7cs3.JourneySharing.entities.messages.journey.CreateJourneyResponse;
 import com.cs7cs3.JourneySharing.entities.messages.journey.ExitJourneyRequest;
 import com.cs7cs3.JourneySharing.entities.messages.journey.ExitJourneyResponse;
-import com.cs7cs3.JourneySharing.entities.messages.journey.GetHistoryRequest;
-import com.cs7cs3.JourneySharing.entities.messages.journey.GetHistoryResponse;
 import com.cs7cs3.JourneySharing.entities.messages.journey.GetJourneyByIdRequest;
 import com.cs7cs3.JourneySharing.entities.messages.journey.GetJourneyByIdResponse;
 import com.cs7cs3.JourneySharing.entities.messages.journey.GetJourneyByLocationRequest;
@@ -282,32 +280,6 @@ public class JourneyController {
     return Response.make(Utils.nextToken(req.token), GetUnapprovedUsersResponse.make(userIds));
   }
 
-  @PostMapping("/get-history")
-  public Response<GetHistoryResponse> getHistory(@RequestBody Request<GetHistoryRequest> req) {
-    var testRes = req.test();
-    if (testRes.right.isPresent()) {
-      return Response.makeError(testRes.right.get());
-    }
 
-    var payload = testRes.left;
-
-    var uid = Utils.getIdByToken(req.token);
-
-    var journeyIds = journeyRepository.findJourneyIdByUserId(uid, payload.from, payload.len);
-    if (journeyIds == null || journeyIds.isEmpty()) {
-      return Response.makeError("history does not exist");
-    }
-
-    var result = new ArrayList<Journey>();
-    for (String jid : journeyIds) {
-      var journey = journeyRepository.findById(jid);
-      if (journey == null || journey.isEmpty()) {
-        return Response.makeError("journey does not exist");
-      }
-      result.add(journey.get());
-    }
-
-    return Response.make(Utils.nextToken(req.token), GetHistoryResponse.make(result));
-  }
 
 }

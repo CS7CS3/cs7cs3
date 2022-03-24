@@ -19,4 +19,10 @@ public interface ReviewRepository extends JpaRepository<UserReview, String> {
     public List<UserReview> findByUser(@Param("userId") String userId, @Param("from") int from,
             @Param("len") int len);
 
+    @Query(value = "SELECT id FROM cs7cs3.user_review WHERE reviewee_id = :userId LIMIT :len OFFSET :from ", nativeQuery = true)
+    public List<String> findReviewIdByUserId(@Param("userId") String userId, @Param("from") int from,
+                                              @Param("len") int len);
+
+
 }
+

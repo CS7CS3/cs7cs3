@@ -1,4 +1,4 @@
-package com.cs7cs3.JourneySharing.entities.messages.journey;
+package com.cs7cs3.JourneySharing.entities.messages.user_info;
 
 import java.util.List;
 
