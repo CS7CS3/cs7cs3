@@ -22,4 +22,5 @@ public interface MessageRepository extends JpaRepository<Message, String> {
       """, nativeQuery = true)
   public List<Message> getMessagesByUserIdOrderByTimestamp(@Param("userId") String userId, @Param("from") int from,
       @Param("len") int len);
+
 }

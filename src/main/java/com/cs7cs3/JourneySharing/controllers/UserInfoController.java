@@ -90,7 +90,6 @@ public class UserInfoController {
         userInfoRepository.save(userinfo);
 
         return Response.make(Utils.nextToken(req.token), userinfo);
-
     }
 
     @PostMapping("/get-history")

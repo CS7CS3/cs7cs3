@@ -12,6 +12,7 @@ public class UtilsTest {
   void testToken() {
     String userId = "66670c47-2103-4e4d-a980-96364094036c";
     String token = Utils.makeToken(userId);
+    System.out.println(token);
     String newUserId = Utils.getIdByToken(token);
 
     assertEquals(userId, newUserId);

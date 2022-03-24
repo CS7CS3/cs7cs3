@@ -30,7 +30,7 @@ public class Journey extends Validatable {
 
     journey.id = Utils.makeUUID();
 
-    journey.createdTime = System.currentTimeMillis() / 1000;
+    journey.createdTime = Utils.timestamp();
 
     journey.from = from;
     journey.to = to;
@@ -46,7 +46,7 @@ public class Journey extends Validatable {
 
     journey.id = Utils.makeUUID();
 
-    journey.createdTime = System.currentTimeMillis() / 1000;
+    journey.createdTime = Utils.timestamp();
 
     journey.from = req.from;
     journey.to = req.to;

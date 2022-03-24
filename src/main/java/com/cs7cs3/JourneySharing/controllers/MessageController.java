@@ -27,6 +27,10 @@ public class MessageController {
 
   private Logger logger = LoggerFactory.getLogger(this.getClass());
 
+  // public Response<GetPKResponse> getPK(@RequestBody Request<GetPKRequest>) {
+    
+  // }
+
   @PostMapping("/send")
   public Response<SendMessageResponse> send(@RequestBody Request<SendMessageRequest> req) {
     logger.info(req.toString());

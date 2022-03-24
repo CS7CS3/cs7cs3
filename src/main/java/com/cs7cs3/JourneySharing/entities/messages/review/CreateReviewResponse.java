@@ -8,8 +8,6 @@ import lombok.Data;
 @Data
 public class CreateReviewResponse extends Validatable {
 
-    public UserReview userReview;
-
     private CreateReviewResponse(UserReview userReview) {
         this.userReview = userReview;
     }
@@ -18,4 +16,5 @@ public class CreateReviewResponse extends Validatable {
         return new CreateReviewResponse(userReview);
     }
 
+    public UserReview userReview;
 }
