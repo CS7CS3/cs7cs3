@@ -1,2 +1,2 @@
-pip install -r ./ft/requirement.txt
-ft/function_test.ps1
+python -m pip install -r $PSScriptRoot/ft/requirement.txt
+. "$PSScriptRoot/ft/function_test.ps1"

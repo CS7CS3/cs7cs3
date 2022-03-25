@@ -1,7 +1,7 @@
-pytest -v ft/init_test.py
+python -m pytest -v $PSScriptRoot\init_test.py
 
-pytest -v ft/journey_main_workflow_test.py
-pytest -v ft/journey_journey_does_not_exist_test.py
-pytest -v ft/journey_malformed_approve_test.py
+python -m pytest -v $PSScriptRoot\journey_main_workflow_test.py
+python -m pytest -v $PSScriptRoot\journey_journey_does_not_exist_test.py
+python -m pytest -v $PSScriptRoot\journey_malformed_approve_test.py
 
-pytest -v ft/message_test.py
+python -m pytest -v $PSScriptRoot\message_test.py
