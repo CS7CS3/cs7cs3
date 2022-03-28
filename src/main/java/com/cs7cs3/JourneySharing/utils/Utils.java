@@ -73,4 +73,10 @@ public class Utils {
     return token.userId;
   }
 
+  public static Long getTimeByToken(String tokenStr) {
+    byte result[] = decrypt(Base64.decodeBase64(tokenStr));
+    var token = Token.fromJson(new String(result));
+    return token.expire;
+  }
+
 }

@@ -45,13 +45,13 @@ visit https://documenter.getpostman.com/view/5965087/UVkiTeEB
 
 
 
-/tokens
+/tokens √
 - 查看token是否过期
 
-/tokens/refresh
+/tokens/refresh √
 - 刷新token
 
-/tokens/info
+/tokens/info √
 - 返回token对应用户信息
 
 

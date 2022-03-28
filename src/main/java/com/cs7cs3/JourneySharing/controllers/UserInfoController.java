@@ -41,7 +41,7 @@ public class UserInfoController {
     private ReviewRepository reviewRepository;
 
 
-    @PostMapping("get-profile")
+    @PostMapping("/get-profile")
     public Response<GetProfileResponse> getProfile(@RequestBody Request<GetProfileRequest> req) {
         var res = req.test();
         if (res.right.isPresent()) {
@@ -148,15 +148,8 @@ public class UserInfoController {
 //
             result.add(review.get());
         }
-
-
-
-
-
         return Response.make(Utils.nextToken(req.token), GetReviewResponse.make(result));
     }
-
-
 
 
 }
