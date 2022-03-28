@@ -5,6 +5,8 @@ import java.util.UUID;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
+import com.cs7cs3.JourneySharing.entities.Token;
+
 import org.apache.tomcat.util.codec.binary.Base64;
 
 public class Utils {
@@ -51,71 +53,24 @@ public class Utils {
     return null;
   }
 
-  // public static String makeToken(String userId) {
-  // var token = Token.make(userId);
-  // return Base64.encodeBase64String(encrypt(token.toString().getBytes()));
-  // }
-
-  // public static String nextToken(String tokenStr) {
-  // byte result[] = decrypt(Base64.decodeBase64(tokenStr));
-  // var token = Token.fromJson(new String(result));
-  // token.expire = Utils.timestamp() + Token.duration;
-
-  // var jsonStr = token.toString();
-
-  // result = encrypt(jsonStr.getBytes());
-
-  // return Base64.encodeBase64String(result);
-  // }
-
-  // public static String getIdByToken(String tokenStr) {
-  // byte result[] = decrypt(Base64.decodeBase64(tokenStr));
-  // var token = Token.fromJson(new String(result));
-  // return token.userId;
-  // }
-
   public static boolean validateToken(String token) {
     return true;
   }
 
   public static String makeToken(String userId) {
-    try {
-      SecretKeySpec sKey = new SecretKeySpec(key, "AES");
-
-      Cipher cipher = Cipher.getInstance("AES");
-      cipher.init(Cipher.ENCRYPT_MODE, sKey);
-      byte result[] = cipher.doFinal(userId.getBytes());
-
-      return Base64.encodeBase64String(result);
-
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
-    return "";
+    var token = Token.make(userId);
+    byte result[] = encrypt(token.toJson().getBytes());
+    return Base64.encodeBase64String(result);
   }
 
   public static String nextToken(String token) {
     return token;
   }
 
-  public static String getIdByToken(String token) {
-    try {
-      SecretKeySpec sKey = new SecretKeySpec(key, "AES");
-
-      Cipher cipher = Cipher.getInstance("AES");
-      cipher.init(Cipher.DECRYPT_MODE, sKey);
-
-      byte decode[] = Base64.decodeBase64(token);
-      byte result[] = cipher.doFinal(decode);
-
-      return new String(result);
-
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
-    return "";
+  public static String getIdByToken(String tokenStr) {
+    byte result[] = decrypt(Base64.decodeBase64(tokenStr));
+    var token = Token.fromJson(new String(result));
+    return token.userId;
   }
 
 }

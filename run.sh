@@ -1,2 +1,3 @@
 #!env bash
-mvn spring-boot:run  
+rm -rf target
+mvn spring-boot:run

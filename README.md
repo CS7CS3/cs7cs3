@@ -42,3 +42,28 @@ visit https://documenter.getpostman.com/view/5965087/UVkiTeEB
 - [x] get journey
   - [x] get journey by id
   - [x] get journey by location (from where to where)
+
+
+
+/tokens
+- 查看token是否过期
+
+/tokens/refresh
+- 刷新token
+
+/tokens/info
+- 返回token对应用户信息
+
+
+1. 拿到一个token字符串
+2. 使用base64解码字符串 -> byte[] (解密前的)
+3. 对byte数组使用decrypt -> byte[] (解密后的)
+4. 把byte数组转换成string `new String(byte数组)`
+5. Token.fromJson(str) -> Token对象
+
+
+1. 有一个token对象
+2. 使用token.toJson() -> String 它是一个json字符串
+3. 使用jsonStr.getBytes()拿到一个byte[]
+4. encrypt加密这个字节数组，得到一个加密后的字节数组 
+5. 使用base64编码Base64.encodeBase64String(加密后的字节数组);
