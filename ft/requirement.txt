@@ -1,3 +1,4 @@
+pyaes
 pytest
 requests
-uuid
+rsa

@@ -280,6 +280,4 @@ public class JourneyController {
     return Response.make(Utils.nextToken(req.token), GetUnapprovedUsersResponse.make(userIds));
   }
 
-
-
 }

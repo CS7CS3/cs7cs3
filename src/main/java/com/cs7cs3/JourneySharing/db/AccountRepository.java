@@ -26,4 +26,10 @@ public interface AccountRepository extends JpaRepository<Account, String> {
         AND password = :password
       """, nativeQuery = true)
   public int testPassword(@Param("username") String username, @Param("password") String password);
+
+  @Query(value = "SELECT `public_key` FROM `cs7cs3`.`account` WHERE (`id` = :userId)", nativeQuery = true)
+  public String getPublicKey(@Param("userId") String userId);
+
+  @Query(value = "SELECT `private_key` FROM `cs7cs3`.`account` WHERE (`id` = :userId)", nativeQuery = true)
+  public String getPrivateKey(@Param("userId") String userId);
 }

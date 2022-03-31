@@ -29,6 +29,8 @@ public class Account extends Validatable {
 
     acc.id = Utils.makeUUID();
     acc.password = req.password;
+    acc.publicKey = req.publicKey;
+    acc.privateKey = req.privateKey;
 
     return acc;
   }
@@ -36,6 +38,8 @@ public class Account extends Validatable {
   @Id
   public String id = "";
   public String password = "";
+  public String publicKey = "";
+  public String privateKey = "";
 
   @Override
   public boolean validate() {

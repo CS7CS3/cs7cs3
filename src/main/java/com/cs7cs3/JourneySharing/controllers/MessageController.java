@@ -1,11 +1,14 @@
 package com.cs7cs3.JourneySharing.controllers;
 
+import com.cs7cs3.JourneySharing.db.AccountRepository;
 import com.cs7cs3.JourneySharing.db.MessageRepository;
 import com.cs7cs3.JourneySharing.entities.Message;
 import com.cs7cs3.JourneySharing.entities.messages.Request;
 import com.cs7cs3.JourneySharing.entities.messages.Response;
 import com.cs7cs3.JourneySharing.entities.messages.message.GetMessageRequest;
 import com.cs7cs3.JourneySharing.entities.messages.message.GetMessageResponse;
+import com.cs7cs3.JourneySharing.entities.messages.message.GetPublicKeyRequest;
+import com.cs7cs3.JourneySharing.entities.messages.message.GetPublicKeyResponse;
 import com.cs7cs3.JourneySharing.entities.messages.message.SendMessageRequest;
 import com.cs7cs3.JourneySharing.entities.messages.message.SendMessageResponse;
 import com.cs7cs3.JourneySharing.utils.Utils;
@@ -25,11 +28,10 @@ public class MessageController {
   @Autowired
   private MessageRepository messageRepository;
 
-  private Logger logger = LoggerFactory.getLogger(this.getClass());
+  @Autowired
+  private AccountRepository accountRepository;
 
-  // public Response<GetPKResponse> getPK(@RequestBody Request<GetPKRequest>) {
-    
-  // }
+  private Logger logger = LoggerFactory.getLogger(this.getClass());
 
   @PostMapping("/send")
   public Response<SendMessageResponse> send(@RequestBody Request<SendMessageRequest> req) {
@@ -69,5 +71,20 @@ public class MessageController {
     }
 
     return Response.make(Utils.nextToken(req.token), GetMessageResponse.make(messages));
+  }
+
+  @PostMapping("get-public-key")
+  public Response<GetPublicKeyResponse> getPublicKey(@RequestBody Request<GetPublicKeyRequest> req) {
+    logger.info(req.toString());
+
+    var res = req.test();
+    if (res.right.isPresent()) {
+      return Response.makeError(res.right.get());
+    }
+    var payload = res.left;
+
+    var publicKey = accountRepository.getPublicKey(payload.userId);
+
+    return Response.make(Utils.nextToken(req.token), GetPublicKeyResponse.make(publicKey));
   }
 }

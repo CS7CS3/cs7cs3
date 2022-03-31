@@ -27,6 +27,8 @@ DROP TABLE IF EXISTS `account`;
 CREATE TABLE `account` (
   `id` varchar(255) NOT NULL DEFAULT '',
   `password` varchar(255) NOT NULL DEFAULT '',
+  `public_key` text NOT NULL DEFAULT '',
+  `private_key` text NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -65,7 +67,7 @@ DROP TABLE IF EXISTS `user_review`;
 CREATE TABLE `user_review` (
   `id` varchar(255) NOT NULL DEFAULT '',
   `anonymous` bit(1) NOT NULL DEFAULT b'0',
-  `content` varchar(255) NOT NULL DEFAULT '',
+  `content` text NOT NULL DEFAULT '',
   `rating` double NOT NULL DEFAULT 0,
   `user_id` varchar(255) NOT NULL DEFAULT '',
   `reviewee_id` varchar(255) NOT NULL DEFAULT '',
@@ -84,7 +86,7 @@ CREATE TABLE `message` (
   `id` varchar(255) NOT NULL DEFAULT '',
   `sender` varchar(255) NOT NULL DEFAULT '',
   `receiver` varchar(255) NOT NULL DEFAULT '',
-  `content` varchar(255) NOT NULL DEFAULT '',
+  `content` text NOT NULL DEFAULT '',
   `timestamp` int NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   CONSTRAINT `2b5c2b8b-8a22-f2f7-ae0d-acb761bcfb99` FOREIGN KEY (`sender`) REFERENCES `account` (`id`) ON DELETE CASCADE,

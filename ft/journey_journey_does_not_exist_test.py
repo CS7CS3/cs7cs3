@@ -8,13 +8,12 @@ def test_login_alice():
 
   payload = json.dumps({
       "username": "alice",
-      "password": "4mxeopYEdadsklDCJzHyK",
+      "password": sha256(password["alice"]),
       "timestamp": timestamp()
   })
   headers = {
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Basic PEJhc2ljIEF1dGggVXNlcm5hbWU+OjxCYXNpYyBBdXRoIFBhc3N3b3JkPg=='
+      'Accept': 'application/json'
   }
 
   response = requests.request("POST", url, headers=headers, data=payload)
@@ -25,7 +24,7 @@ def test_login_alice():
   tokens["alice"] = data["token"]
 
 
-def test_join_journey_bob():
+def test_join_journey_alice():
   url = "http://localhost:8080/journey/join"
 
   payload = json.dumps({
@@ -37,8 +36,7 @@ def test_join_journey_bob():
   })
   headers = {
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Basic PEJhc2ljIEF1dGggVXNlcm5hbWU+OjxCYXNpYyBBdXRoIFBhc3N3b3JkPg=='
+      'Accept': 'application/json'
   }
 
   response = requests.request("POST", url, headers=headers, data=payload)

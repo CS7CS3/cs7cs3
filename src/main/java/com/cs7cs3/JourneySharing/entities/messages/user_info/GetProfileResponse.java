@@ -2,6 +2,7 @@ package com.cs7cs3.JourneySharing.entities.messages.user_info;
 
 import com.cs7cs3.JourneySharing.entities.UserInfo;
 import com.cs7cs3.JourneySharing.entities.base.validator.Validatable;
+
 import lombok.Data;
 
 @Data

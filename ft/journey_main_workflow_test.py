@@ -8,13 +8,12 @@ def test_login_alice():
 
   payload = json.dumps({
       "username": "alice",
-      "password": "4mxeopYEdadsklDCJzHyK",
+      "password": sha256(password["alice"]),
       "timestamp": timestamp()
   })
   headers = {
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Basic PEJhc2ljIEF1dGggVXNlcm5hbWU+OjxCYXNpYyBBdXRoIFBhc3N3b3JkPg=='
+      'Accept': 'application/json'
   }
 
   response = requests.request("POST", url, headers=headers, data=payload)
@@ -30,13 +29,12 @@ def test_login_bob():
 
   payload = json.dumps({
       "username": "bob",
-      "password": "4mxeopYEdwhDCJzHyK",
+      "password": sha256(password["bob"]),
       "timestamp": timestamp()
   })
   headers = {
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Basic PEJhc2ljIEF1dGggVXNlcm5hbWU+OjxCYXNpYyBBdXRoIFBhc3N3b3JkPg=='
+      'Accept': 'application/json'
   }
 
   response = requests.request("POST", url, headers=headers, data=payload)
@@ -66,8 +64,7 @@ def test_create_journey_alice():
   })
   headers = {
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Basic PEJhc2ljIEF1dGggVXNlcm5hbWU+OjxCYXNpYyBBdXRoIFBhc3N3b3JkPg=='
+      'Accept': 'application/json'
   }
 
   response = requests.request("POST", url, headers=headers, data=payload)
@@ -90,8 +87,7 @@ def test_join_journey_bob():
   })
   headers = {
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Basic PEJhc2ljIEF1dGggVXNlcm5hbWU+OjxCYXNpYyBBdXRoIFBhc3N3b3JkPg=='
+      'Accept': 'application/json'
   }
 
   response = requests.request("POST", url, headers=headers, data=payload)
@@ -110,8 +106,7 @@ def test_approve_join_alice():
   })
   headers = {
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Basic PEJhc2ljIEF1dGggVXNlcm5hbWU+OjxCYXNpYyBBdXRoIFBhc3N3b3JkPg=='
+      'Accept': 'application/json'
   }
 
   response = requests.request("POST", url, headers=headers, data=payload)
@@ -150,8 +145,7 @@ def test_start_journey_alice():
   })
   headers = {
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Basic PEJhc2ljIEF1dGggVXNlcm5hbWU+OjxCYXNpYyBBdXRoIFBhc3N3b3JkPg=='
+      'Accept': 'application/json'
   }
 
   response = requests.request("POST", url, headers=headers, data=payload)
@@ -171,8 +165,7 @@ def test_confirm_arrive_alice():
 
   headers = {
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Basic PEJhc2ljIEF1dGggVXNlcm5hbWU+OjxCYXNpYyBBdXRoIFBhc3N3b3JkPg=='
+      'Accept': 'application/json'
   }
 
   response = requests.request("POST", url, headers=headers, data=payload)
@@ -192,8 +185,7 @@ def test_confirm_arrive_bob():
 
   headers = {
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Basic PEJhc2ljIEF1dGggVXNlcm5hbWU+OjxCYXNpYyBBdXRoIFBhc3N3b3JkPg=='
+      'Accept': 'application/json'
   }
 
   response = requests.request("POST", url, headers=headers, data=payload)
@@ -223,8 +215,7 @@ def test_create_journey_bob():
 
   headers = {
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Basic PEJhc2ljIEF1dGggVXNlcm5hbWU+OjxCYXNpYyBBdXRoIFBhc3N3b3JkPg=='
+      'Accept': 'application/json'
   }
 
   response = requests.request("POST", url, headers=headers, data=payload)
@@ -247,8 +238,7 @@ def test_join_journey_alice():
   })
   headers = {
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Basic PEJhc2ljIEF1dGggVXNlcm5hbWU+OjxCYXNpYyBBdXRoIFBhc3N3b3JkPg=='
+      'Accept': 'application/json'
   }
 
   response = requests.request("POST", url, headers=headers, data=payload)
@@ -267,8 +257,7 @@ def test_approve_join_bob():
   })
   headers = {
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Basic PEJhc2ljIEF1dGggVXNlcm5hbWU+OjxCYXNpYyBBdXRoIFBhc3N3b3JkPg=='
+      'Accept': 'application/json'
   }
 
   response = requests.request("POST", url, headers=headers, data=payload)
@@ -307,8 +296,7 @@ def test_start_journey_bob():
   })
   headers = {
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Basic PEJhc2ljIEF1dGggVXNlcm5hbWU+OjxCYXNpYyBBdXRoIFBhc3N3b3JkPg=='
+      'Accept': 'application/json'
   }
 
   response = requests.request("POST", url, headers=headers, data=payload)
@@ -328,8 +316,7 @@ def test_confirm_arrive_alice_again():
 
   headers = {
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Basic PEJhc2ljIEF1dGggVXNlcm5hbWU+OjxCYXNpYyBBdXRoIFBhc3N3b3JkPg=='
+      'Accept': 'application/json'
   }
 
   response = requests.request("POST", url, headers=headers, data=payload)
@@ -349,8 +336,7 @@ def test_confirm_arrive_bob_again():
 
   headers = {
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Basic PEJhc2ljIEF1dGggVXNlcm5hbWU+OjxCYXNpYyBBdXRoIFBhc3N3b3JkPg=='
+      'Accept': 'application/json'
   }
 
   response = requests.request("POST", url, headers=headers, data=payload)

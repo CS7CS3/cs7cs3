@@ -43,9 +43,10 @@ public class LoginController {
       return Response.makeError("wrong username or password");
     }
 
-    String id = userInfoRepository.getIdByUsername(req.username);
+    var id = userInfoRepository.getIdByUsername(req.username);
+    var privateKey = accountRepository.getPrivateKey(id);
 
-    return Response.make(Utils.makeToken(id), LoginResponse.make(id));
+    return Response.make(Utils.makeToken(id), LoginResponse.make(id, privateKey));
   }
 
 }
