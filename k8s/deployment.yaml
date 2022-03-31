@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cs7cs3-journey-sharing-deploy
+  labels:
+    app: cs7cs3-journey-sharing
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: cs7cs3-journey-sharing
+  template:
+    metadata:
+      labels:
+        app: cs7cs3-journey-sharing
+    spec:
+      containers:
+        - name: cs7cs3-journey-sharing
+          image: ghcr.io/cs7cs3/cs7cs3:master
+          ports:
+            - containerPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cs7cs3-mariadb-deploy
+  labels:
+    app: cs7cs3-mariadb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cs7cs3-mariadb
+  template:
+    metadata:
+      labels:
+        app: cs7cs3-mariadb
+    spec:
+      containers:
+        - name: cs7cs3-journey-sharing
+          image: docker.io/library/mariadb:10.6
+          env:
+            - name: MARIADB_ROOT_PASSWORD
+              value: root
+          ports:
+            - containerPort: 3306
+          command:
+            - mysql -uroot -proot < /shared/tables.sql
+          volumeMounts:
+            - name: shared
+              mountPath: /shared
+      initContainers:
+        - name: get-sql
+          image: ghcr.io/cs7cs3/cs7cs3:master
+          command:
+            - cp /app/tables.sql /shared
+          volumeMounts:
+            - name: shared
+              mountPath: /shared
+      volumes:
+        - name: shared
+          emptyDir: {}
