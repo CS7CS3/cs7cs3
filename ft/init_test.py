@@ -5,7 +5,7 @@ from ft_config import *
 
 def test_init_env():
   """reset database"""
-  os.system(f"mysql -u{mysql_user} -p{mysql_passwd} < tables.sql")
+  os.system(f"mysql -u{mysql_user} -p{mysql_passwd} -hlocalhost --protocol tcp < tables.sql")
 
 
 def test_register_alice():

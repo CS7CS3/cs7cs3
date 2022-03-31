@@ -32,7 +32,7 @@ def timestamp():
 
 def get_uid(name):
   res = subprocess.check_output(
-      f"mysql -u{mysql_user} -p{mysql_passwd} -Bse \"SELECT id FROM cs7cs3.user_info WHERE username = '{name}'\"", shell=True)
+      f"mysql -u{mysql_user} -p{mysql_passwd} -hlocalhost --protocol tcp -Bse \"SELECT id FROM cs7cs3.user_info WHERE username = '{name}'\"", shell=True)
   uid = res.decode("utf-8")
 
   return uid.strip()

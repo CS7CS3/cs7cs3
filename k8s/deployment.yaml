@@ -17,6 +17,9 @@ spec:
       containers:
         - name: cs7cs3-journey-sharing
           image: ghcr.io/cs7cs3/cs7cs3:master
+          env:
+            - name: CS7CS3_MARIADB_ENDPOINT
+              value: cs7cs3-mariadb-service:3306
           ports:
             - containerPort: 8080
 ---
@@ -37,26 +40,30 @@ spec:
         app: cs7cs3-mariadb
     spec:
       containers:
-        - name: cs7cs3-journey-sharing
+        - name: cs7cs3-mariadb
           image: docker.io/library/mariadb:10.6
           env:
             - name: MARIADB_ROOT_PASSWORD
               value: root
+            - name: MARIADB_DATABASE
+              value: cs7cs3
           ports:
             - containerPort: 3306
-          command:
-            - mysql -uroot -proot < /shared/tables.sql
           volumeMounts:
             - name: shared
-              mountPath: /shared
+              mountPath: /docker-entrypoint-initdb.d
+            - name: mariadb-persistent-storage
+              mountPath: /var/lib/mysql
       initContainers:
         - name: get-sql
           image: ghcr.io/cs7cs3/cs7cs3:master
-          command:
-            - cp /app/tables.sql /shared
+          command: ["cp", "/app/tables.sql", "/shared"]
           volumeMounts:
             - name: shared
               mountPath: /shared
       volumes:
         - name: shared
           emptyDir: {}
+        - name: mariadb-persistent-storage
+          persistentVolumeClaim:
+            claimName: cs7cs3-mariadb-pvc
