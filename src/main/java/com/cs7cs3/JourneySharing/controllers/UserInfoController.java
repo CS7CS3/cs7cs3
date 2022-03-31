@@ -14,18 +14,26 @@ import com.cs7cs3.JourneySharing.entities.UserReview;
 import com.cs7cs3.JourneySharing.entities.messages.Request;
 import com.cs7cs3.JourneySharing.entities.messages.Response;
 import com.cs7cs3.JourneySharing.entities.messages.UpdateUserInfoRequest;
-import com.cs7cs3.JourneySharing.entities.messages.user_info.*;
+import com.cs7cs3.JourneySharing.entities.messages.user_info.GetAvatarRequest;
+import com.cs7cs3.JourneySharing.entities.messages.user_info.GetHistoryRequest;
+import com.cs7cs3.JourneySharing.entities.messages.user_info.GetHistoryResponse;
+import com.cs7cs3.JourneySharing.entities.messages.user_info.GetProfileRequest;
+import com.cs7cs3.JourneySharing.entities.messages.user_info.GetProfileResponse;
+import com.cs7cs3.JourneySharing.entities.messages.user_info.GetReviewRequest;
+import com.cs7cs3.JourneySharing.entities.messages.user_info.GetReviewResponse;
 import com.cs7cs3.JourneySharing.utils.Utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/user-info")
 public class UserInfoController {
@@ -39,7 +47,6 @@ public class UserInfoController {
 
     @Autowired
     private ReviewRepository reviewRepository;
-
 
     @PostMapping("/get-profile")
     public Response<GetProfileResponse> getProfile(@RequestBody Request<GetProfileRequest> req) {
@@ -120,9 +127,8 @@ public class UserInfoController {
         return Response.make(Utils.nextToken(req.token), GetHistoryResponse.make(result));
     }
 
-
     @PostMapping("/get-review")
-    public Response<GetReviewResponse>getReview(@RequestBody Request<GetReviewRequest> req){
+    public Response<GetReviewResponse> getReview(@RequestBody Request<GetReviewRequest> req) {
         var testRes = req.test();
         if (testRes.right.isPresent()) {
             return Response.makeError(testRes.right.get());
@@ -142,14 +148,13 @@ public class UserInfoController {
                 return Response.makeError("reviews does not exist");
             }
 
-//            if(review.get().anonymous){
-//                review.get().userId = "xxx"
-//            }
-//
+            // if(review.get().anonymous){
+            // review.get().userId = "xxx"
+            // }
+            //
             result.add(review.get());
         }
         return Response.make(Utils.nextToken(req.token), GetReviewResponse.make(result));
     }
-
 
 }
