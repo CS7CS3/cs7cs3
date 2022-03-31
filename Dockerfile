@@ -1,9 +1,9 @@
+FROM maven:3.8-openjdk-17 AS build
+ADD . /src
+RUN mvn -f /src/pom.xml clean package
+
 FROM openjdk:17
 
-EXPOSE 8080
+COPY --from=build /src/target/JourneySharing-0.0.1-SNAPSHOT.jar /app/
 
-ARG JAR_FILE
-
-ADD target/${JAR_FILE} /cs7cs3.jar
-
-ENTRYPOINT ["java", "-jar","/cs7cs3.jar"]
+CMD  ["java", "-jar","/app/JourneySharing-0.0.1-SNAPSHOT.jar"]
