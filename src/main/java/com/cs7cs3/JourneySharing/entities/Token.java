@@ -49,6 +49,10 @@ public class Token extends Validatable {
     this.expire = Utils.timestamp() + duration;
   }
 
+  public void refresh() {
+    this.expire = Utils.timestamp() + duration;
+  }
+
   public String userId;
   public long expire;
 }

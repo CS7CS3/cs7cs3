@@ -63,8 +63,12 @@ public class Utils {
     return Base64.encodeBase64String(result);
   }
 
-  public static String nextToken(String token) {
-    return token;
+  public static String nextToken(String tokenStr) {
+    byte result[] = decrypt(Base64.decodeBase64(tokenStr));
+    var token = Token.fromJson(new String(result));
+    token.refresh();
+    result = encrypt(token.toJson().getBytes());
+    return Base64.encodeBase64String(result);
   }
 
   public static String getIdByToken(String tokenStr) {
@@ -73,7 +77,7 @@ public class Utils {
     return token.userId;
   }
 
-  public static Long getTimeByToken(String tokenStr) {
+  public static long getTimeByToken(String tokenStr) {
     byte result[] = decrypt(Base64.decodeBase64(tokenStr));
     var token = Token.fromJson(new String(result));
     return token.expire;

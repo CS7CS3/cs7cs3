@@ -13,8 +13,14 @@ public class Location extends Validatable {
   public double longitude = 0.0;
 
   public double Distance(Location x) {
-    return Math.pow((this.latitude - x.latitude), 2)
-        + Math.pow((this.longitude - x.longitude), 2);
+    double diff_longitude = this.longitude - x.longitude;
+    double diff_latitude = this.latitude - x.latitude;
+
+    double diff_in_meter_longitude = 111194.926_644_558_737 * Math.cos(diff_longitude);
+    double diff_in_meter_latitude = 111194.926_644_558_737 * Math.cos(diff_latitude);
+
+    return Math.pow(diff_in_meter_longitude, 2)
+        + Math.pow(diff_in_meter_latitude, 2);
   }
 
 }

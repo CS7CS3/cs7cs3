@@ -4,9 +4,11 @@ import com.cs7cs3.JourneySharing.db.UserInfoRepository;
 import com.cs7cs3.JourneySharing.entities.messages.Request;
 import com.cs7cs3.JourneySharing.entities.messages.Response;
 import com.cs7cs3.JourneySharing.entities.messages.token.CheckTokenRequest;
+import com.cs7cs3.JourneySharing.entities.messages.token.CheckTokenResponse;
 import com.cs7cs3.JourneySharing.entities.messages.token.GetInfoByTokenRequest;
 import com.cs7cs3.JourneySharing.entities.messages.token.GetInfoByTokenResponse;
 import com.cs7cs3.JourneySharing.entities.messages.token.RefreshTokenRequest;
+import com.cs7cs3.JourneySharing.entities.messages.token.RefreshTokenResponse;
 import com.cs7cs3.JourneySharing.utils.Utils;
 
 import org.slf4j.Logger;
@@ -28,20 +30,17 @@ public class TokenController {
     private UserInfoRepository userInfoRepository;
 
     @PostMapping
-    public boolean checkToken(@RequestBody Request<CheckTokenRequest> req) {
+    public Response<CheckTokenResponse> checkToken(@RequestBody Request<CheckTokenRequest> req) {
         var token = req.token;
-        // token:
-        // btV5NwilFF9Ky67YjJxdxLH0JjOKks7pjyf0u8ctpcgWo+gP1L1m4p99n0J62HdV8kTPzXaPcQY2/sk7lvF3/15kwuXNQGT19IYlRttsS4E=
         var expire = Utils.getTimeByToken(token);
-        var time = System.currentTimeMillis() / 1000L;
-        return (expire - time > 0);
+        var time = Utils.timestamp();
+        return Response.make(Utils.nextToken(token), CheckTokenResponse.make(expire > time));
     }
 
     @PostMapping("/refresh")
-    public String refreshToken(@RequestBody Request<RefreshTokenRequest> req) {
+    public Response<RefreshTokenResponse> refreshToken(@RequestBody Request<RefreshTokenRequest> req) {
         var token = req.token;
-        var new_token = Utils.makeToken(Utils.getIdByToken(token));
-        return new_token;
+        return Response.make(Utils.nextToken(token));
     }
 
     @PostMapping("/info")
@@ -52,6 +51,10 @@ public class TokenController {
         }
 
         var userInfo = userInfoRepository.findById(id);
+        if (userInfo.isEmpty()) {
+            return Response.makeError("user info does not exist");
+        }
+
         return Response.make(Utils.nextToken(req.token), GetInfoByTokenResponse.make(userInfo.get()));
 
     }
