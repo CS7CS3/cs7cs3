@@ -2,11 +2,16 @@ package com.cs7cs3.JourneySharing.controllers;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Random;
 
+import com.cs7cs3.JourneySharing.db.AccountRepository;
 import com.cs7cs3.JourneySharing.db.JourneyRepository;
 import com.cs7cs3.JourneySharing.db.UserInfoRepository;
+import com.cs7cs3.JourneySharing.entities.Account;
 import com.cs7cs3.JourneySharing.entities.Journey;
 import com.cs7cs3.JourneySharing.entities.JourneyStatus;
+import com.cs7cs3.JourneySharing.entities.Location;
+import com.cs7cs3.JourneySharing.entities.UserInfo;
 import com.cs7cs3.JourneySharing.entities.UserStatus;
 import com.cs7cs3.JourneySharing.entities.messages.Request;
 import com.cs7cs3.JourneySharing.entities.messages.Response;
@@ -48,10 +53,65 @@ public class JourneyController {
   private Logger logger = LoggerFactory.getLogger(this.getClass());
 
   @Autowired
+  private AccountRepository accountRepository;
+
+  @Autowired
   private JourneyRepository journeyRepository;
 
   @Autowired
   private UserInfoRepository userInfoRepository;
+
+  public void makeFakeJourney(Location from, Location to) {
+    // create a fake account
+    var account = Account.makeFake();
+    var userInfo = UserInfo.makeFake(account);
+    accountRepository.save(account);
+    userInfoRepository.save(userInfo);
+
+    // create a fake journey
+    var journey = Journey.makeFake(account.id, from, to);
+    journeyRepository.save(journey);
+  }
+
+  public void approveInFakeJourney(String journeyId) {
+    var userIds = journeyRepository.getUserIdByJourneyIdAndStatus(journeyId, UserStatus.PendingApproval.ordinal());
+    for (String userId : userIds) {
+      var rand = new Random();
+      if (rand.nextDouble(0, 1) > 0.5) {
+        continue;
+      }
+
+      var status = journeyRepository.getUserStatusByUserId(userId);
+      if (status == UserStatus.PendingApproval) {
+        journeyRepository.setUserStatus(userId, UserStatus.Waiting.ordinal());
+      }
+    }
+  }
+
+  public void startFakeJourney(String journeyId) {
+    var rand = new Random();
+    if (rand.nextDouble(0, 1) > 0.5) {
+      return;
+    }
+
+    var allUserStatus = journeyRepository.getUserStatusByJourneyId(journeyId);
+    if (allUserStatus == null) {
+      return;
+    }
+
+    boolean noPendingApproval = true;
+    for (UserStatus _status : allUserStatus) {
+      if (_status == UserStatus.PendingApproval) {
+        noPendingApproval = false;
+        break;
+      }
+    }
+
+    if (noPendingApproval) {
+      journeyRepository.setJourneyStatus(journeyId, JourneyStatus.Travelling.ordinal());
+      journeyRepository.setUserStatusByJourneyId(journeyId, UserStatus.Travelling.ordinal());
+    }
+  }
 
   @PostMapping("/approve-join")
   public Response<ApproveJoinResponse> approveJoin(@RequestBody Request<ApproveJoinRequest> req) {
@@ -160,6 +220,9 @@ public class JourneyController {
     }
     var payload = testRes.left;
 
+    approveInFakeJourney(payload.journeyId);
+    startFakeJourney(payload.journeyId);
+
     var res = journeyRepository.findById(payload.journeyId);
     if (!res.isPresent()) {
       return Response.makeError("journey does not exist");
@@ -176,6 +239,10 @@ public class JourneyController {
     }
     var payload = testRes.left;
 
+    for (int i = 0; i < 10; i++) {
+      makeFakeJourney(payload.from, payload.to);
+    }
+
     var res = journeyRepository.findAvailableJourneys();
     if (res.isEmpty()) {
       return Response.makeError("no journey available");
@@ -186,7 +253,6 @@ public class JourneyController {
         double diffFrom = payload.from.Distance(a.from) - payload.from.Distance(b.from);
         double diffTo = payload.to.Distance(a.to) - payload.to.Distance(b.to);
 
-        // 1 longitude = ? m
         return (int) Math.round((diffFrom + diffTo));
       }
     });

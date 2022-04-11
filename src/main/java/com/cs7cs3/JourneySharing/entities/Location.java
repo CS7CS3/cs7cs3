@@ -19,8 +19,17 @@ public class Location extends Validatable {
     double diff_in_meter_longitude = 111194.926_644_558_737 * Math.cos(diff_longitude);
     double diff_in_meter_latitude = 111194.926_644_558_737 * Math.cos(diff_latitude);
 
-    return Math.pow(diff_in_meter_longitude, 2)
-        + Math.pow(diff_in_meter_latitude, 2);
+    return Math.sqrt(Math.pow(diff_in_meter_longitude, 2)
+        + Math.pow(diff_in_meter_latitude, 2));
   }
 
+  public void addLogitude(double x) {
+    double longitude = Math.acos(x / 111194.926_644_558_737);
+    this.longitude += longitude;
+  }
+
+  public void addLatitude(double x) {
+    double latitude = Math.acos(x / 111194.926_644_558_737);
+    this.latitude += latitude;
+  }
 }

@@ -2,6 +2,7 @@ package com.cs7cs3.JourneySharing.entities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -24,6 +25,27 @@ import lombok.NonNull;
 @Entity
 @Table(name = "journey")
 public class Journey extends Validatable {
+
+  public static Journey makeFake(String userId, Location from, Location to) {
+    var journey = new Journey();
+    var rand = new Random();
+
+    journey.id = Utils.makeUUID();
+
+    journey.createdTime = Utils.timestamp();
+
+    from.addLatitude(rand.nextDouble(0, 100));
+    from.addLogitude(rand.nextDouble(0, 100));
+    to.addLatitude(rand.nextDouble(0, 100));
+    to.addLogitude(rand.nextDouble(0, 100));
+    journey.from = from;
+    journey.to = to;
+    journey.members.add(JourneyMember.make(userId, UserStatus.Waiting));
+
+    journey.host = userId;
+
+    return journey;
+  }
 
   public static Journey make(@NonNull String userId, @NonNull Location from, @NonNull Location to) {
     var journey = new Journey();

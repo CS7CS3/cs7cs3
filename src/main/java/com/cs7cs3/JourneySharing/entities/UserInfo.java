@@ -2,6 +2,7 @@ package com.cs7cs3.JourneySharing.entities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -13,6 +14,7 @@ import javax.persistence.Table;
 
 import com.cs7cs3.JourneySharing.entities.base.validator.Validatable;
 import com.cs7cs3.JourneySharing.entities.messages.account.RegisterRequest;
+import com.github.javafaker.Faker;
 
 import lombok.Data;
 
@@ -20,6 +22,17 @@ import lombok.Data;
 @Entity
 @Table(name = "user_info")
 public class UserInfo extends Validatable {
+  public static Faker faker = new Faker(Locale.UK);
+
+  public static UserInfo makeFake(Account account) {
+    UserInfo userInfo = new UserInfo();
+
+    userInfo.id = account.id;
+    userInfo.username = faker.name().username();
+
+    return userInfo;
+  }
+
   public static UserInfo make(Account account, RegisterRequest req) {
     UserInfo userInfo = new UserInfo();
 
@@ -40,7 +53,8 @@ public class UserInfo extends Validatable {
     return userInfo;
   }
 
-  public static UserInfo makeRating(String id, String username, String avatar, String bio,Integer counter,double rating) {
+  public static UserInfo makeRating(String id, String username, String avatar, String bio, Integer counter,
+      double rating) {
     UserInfo userInfo = new UserInfo();
 
     userInfo.id = id;
