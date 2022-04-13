@@ -3,6 +3,7 @@ package com.cs7cs3.JourneySharing.entities;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -25,10 +26,19 @@ public class UserInfo extends Validatable {
   public static Faker faker = new Faker(Locale.UK);
 
   public static UserInfo makeFake(Account account) {
+    var rand = new Random();
     UserInfo userInfo = new UserInfo();
 
     userInfo.id = account.id;
     userInfo.username = faker.name().username();
+    var rint = rand.nextInt(0, 2);
+    if (rint == 0) {
+      userInfo.gender = Gender.female;
+    } else if (rint == 1) {
+      userInfo.gender = Gender.male;
+    } else if (rint == 2) {
+      userInfo.gender = Gender.other;
+    }
 
     return userInfo;
   }
