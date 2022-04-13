@@ -72,6 +72,7 @@ public class UserInfo extends Validatable {
   public String username = "";
   public String avatar = "";
   public String bio = "";
+  public Gender gender = Gender.other;
   public double rating = 0.0;
   public int counter = 0;
 

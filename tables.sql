@@ -142,6 +142,7 @@ CREATE TABLE `user_info` (
   `id` varchar(255) NOT NULL,
   `avatar` text NOT NULL DEFAULT '',
   `bio` text NOT NULL DEFAULT '',
+  `gender` int(11) NOT NULL DEFAULT 0,
   `rating` double NOT NULL DEFAULT 0,
   `counter` integer NOT NULL DEFAULT 0,
   `username` varchar(255) NOT NULL DEFAULT '',
