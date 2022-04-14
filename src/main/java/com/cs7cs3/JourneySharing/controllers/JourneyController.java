@@ -129,6 +129,43 @@ public class JourneyController {
     }
   }
 
+  public void endFakeJourney(String journeyId) {
+    var rand = new Random();
+    if (rand.nextDouble(0, 1) > 0.95) {
+      return;
+    }
+
+    var journeyOpt = journeyRepository.findById(journeyId);
+    if (journeyOpt.isEmpty()) {
+      return;
+    }
+
+    var journey = journeyOpt.get();
+    for (var member : journey.members) {
+      if (member.status == UserStatus.Travelling) {
+        journeyRepository.setUserStatus(member.userId, UserStatus.Arrived.ordinal());
+        break;
+      }
+    }
+
+    var allUserStatus = journeyRepository.getUserStatusByJourneyId(journeyId);
+    boolean allArrived = true;
+    for (UserStatus _status : allUserStatus) {
+      if (_status != UserStatus.Arrived) {
+        allArrived = false;
+        break;
+      }
+    }
+
+    if (allArrived) {
+      journeyRepository.setJourneyStatus(journeyId, JourneyStatus.End.ordinal());
+      var userIds = journeyRepository.getUserIdByJourneyId(journeyId);
+      for (String userId : userIds) {
+        userInfoRepository.addHistory(userId, journeyId);
+      }
+    }
+  }
+
   @PostMapping("/approve-join")
   public Response<ApproveJoinResponse> approveJoin(@RequestBody Request<ApproveJoinRequest> req) {
     var res = req.test();
@@ -238,6 +275,7 @@ public class JourneyController {
 
     approveInFakeJourney(payload.journeyId);
     startFakeJourney(payload.journeyId);
+    endFakeJourney(payload.journeyId);
 
     var res = journeyRepository.findById(payload.journeyId);
     if (!res.isPresent()) {
