@@ -12,24 +12,32 @@ public class Location extends Validatable {
   public double latitude = 0.0;
   public double longitude = 0.0;
 
+  public static final double EARTH_RADIUS = 6371000;
+
   public double Distance(Location x) {
-    double diff_longitude = this.longitude - x.longitude;
-    double diff_latitude = this.latitude - x.latitude;
+    // calculate distance by longitude and latitude
+    double lat1 = Math.toRadians(latitude);
+    double lat2 = Math.toRadians(x.latitude);
+    double lon1 = Math.toRadians(longitude);
+    double lon2 = Math.toRadians(x.longitude);
 
-    double diff_in_meter_longitude = 111194.926_644_558_737 * Math.cos(diff_longitude);
-    double diff_in_meter_latitude = 111194.926_644_558_737 * Math.cos(diff_latitude);
+    double dLat = lat2 - lat1;
+    double dLon = lon2 - lon1;
 
-    return Math.sqrt(Math.pow(diff_in_meter_longitude, 2)
-        + Math.pow(diff_in_meter_latitude, 2));
+    double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+        + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return EARTH_RADIUS * c;
   }
 
   public void addLogitude(double x) {
-    double longitude = Math.acos(x / 111194.926_644_558_737);
-    this.longitude += longitude;
+    // move x meters on longitude
+    this.longitude += x / (EARTH_RADIUS * Math.cos(Math.toRadians(this.latitude)));
   }
 
   public void addLatitude(double x) {
-    double latitude = Math.acos(x / 111194.926_644_558_737);
-    this.latitude += latitude;
+    // move x meters on latitude
+    this.latitude += x / EARTH_RADIUS;
   }
 }
