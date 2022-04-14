@@ -93,7 +93,7 @@ public class JourneyController {
     var userIds = journeyRepository.getUserIdByJourneyIdAndStatus(journeyId, UserStatus.PendingApproval.ordinal());
     for (String userId : userIds) {
       var rand = new Random();
-      if (rand.nextDouble(0, 1) > 0.5) {
+      if (rand.nextDouble(0, 1) < 0.95) {
         continue;
       }
 
@@ -106,7 +106,13 @@ public class JourneyController {
 
   public void startFakeJourney(String journeyId) {
     var rand = new Random();
-    if (rand.nextDouble(0, 1) > 0.95) {
+    if (rand.nextDouble(0, 1) < 0.95) {
+      return;
+    }
+
+    var journeyStatus = journeyRepository.getJourneyStatusByJourneyId(journeyId);
+    System.out.println(journeyStatus);
+    if (journeyStatus != JourneyStatus.Waiting) {
       return;
     }
 
@@ -131,7 +137,7 @@ public class JourneyController {
 
   public void endFakeJourney(String journeyId) {
     var rand = new Random();
-    if (rand.nextDouble(0, 1) > 0.95) {
+    if (rand.nextDouble(0, 1) < 0.95) {
       return;
     }
 
