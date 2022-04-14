@@ -107,7 +107,7 @@ public class JourneyController {
 
   public void startFakeJourney(String journeyId) {
     var rand = new Random();
-    if (rand.nextDouble(0, 1) > 0.5) {
+    if (rand.nextDouble(0, 1) > 0.95) {
       return;
     }
 
