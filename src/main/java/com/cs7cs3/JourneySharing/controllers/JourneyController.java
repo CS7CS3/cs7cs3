@@ -9,6 +9,7 @@ import com.cs7cs3.JourneySharing.db.JourneyRepository;
 import com.cs7cs3.JourneySharing.db.UserInfoRepository;
 import com.cs7cs3.JourneySharing.entities.Account;
 import com.cs7cs3.JourneySharing.entities.Journey;
+import com.cs7cs3.JourneySharing.entities.Journey.JourneyMember;
 import com.cs7cs3.JourneySharing.entities.JourneyStatus;
 import com.cs7cs3.JourneySharing.entities.Location;
 import com.cs7cs3.JourneySharing.entities.UserInfo;
@@ -62,6 +63,8 @@ public class JourneyController {
   private UserInfoRepository userInfoRepository;
 
   public void makeFakeJourney(Location from, Location to) {
+    var rand = new Random();
+
     // create a fake account
     var account = Account.makeFake();
     var userInfo = UserInfo.makeFake(account);
@@ -70,6 +73,20 @@ public class JourneyController {
 
     // create a fake journey
     var journey = Journey.makeFake(account.id, from, to);
+
+    for (int i = 0; i < rand.nextInt(0, 5); i++) {
+      var _account = Account.makeFake();
+      var _userInfo = UserInfo.makeFake(_account);
+      accountRepository.save(_account);
+      userInfoRepository.save(_userInfo);
+
+      var member = new JourneyMember();
+      member.userId = _userInfo.id;
+      member.status = UserStatus.Waiting;
+      journey.members.add(member);
+    }
+
+    journey.members.add(new JourneyMember());
     journeyRepository.save(journey);
   }
 
