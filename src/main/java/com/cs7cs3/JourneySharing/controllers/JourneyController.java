@@ -86,7 +86,6 @@ public class JourneyController {
       journey.members.add(member);
     }
 
-    journey.members.add(new JourneyMember());
     journeyRepository.save(journey);
   }
 
