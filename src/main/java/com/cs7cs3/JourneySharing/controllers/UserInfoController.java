@@ -82,40 +82,39 @@ public class UserInfoController {
     public Response<UserInfo> updateUserInfo(@RequestBody Request<UpdateUserInfoRequest> req) {
         logger.info(req.toString());
 
-        // var res = req.test();
-        // if (res.right.isPresent()) {
-        //     return Response.makeError(res.right.get());
-        // }
-        // var payload = res.left;
+        var res = req.test();
+        if (res.right.isPresent()) {
+            return Response.makeError(res.right.get());
+        }
+        var payload = res.left;
 
-        // var uid = Utils.getIdByToken(req.token);
+        var uid = Utils.getIdByToken(req.token);
 
-        // var userInfoOpt = userInfoRepository.findById(uid);
-        // if (userInfoOpt.isEmpty()) {
-        //     return Response.makeError("user does not exist");
-        // }
-        // var userInfo = userInfoOpt.get();
+        var userInfoOpt = userInfoRepository.findById(uid);
+        if (userInfoOpt.isEmpty()) {
+            return Response.makeError("user does not exist");
+        }
+        var userInfo = userInfoOpt.get();
 
-        // if (payload.username != null && !payload.username.isEmpty()) {
-        //     userInfo.username = payload.username;
-        // }
+        if (payload.username != null && !payload.username.isEmpty()) {
+            userInfo.username = payload.username;
+        }
 
-        // if (payload.avatar != null && !payload.avatar.isEmpty()) {
-        //     userInfo.avatar = payload.avatar;
-        // }
+        if (payload.avatar != null && !payload.avatar.isEmpty()) {
+            userInfo.avatar = payload.avatar;
+        }
 
-        // if (payload.bio != null && !payload.bio.isEmpty()) {
-        //     userInfo.bio = payload.bio;
-        // }
+        if (payload.bio != null && !payload.bio.isEmpty()) {
+            userInfo.bio = payload.bio;
+        }
 
-        // if (payload.gender != null) {
-        //     userInfo.gender = payload.gender;
-        // }
+        if (payload.gender != null) {
+            userInfo.gender = payload.gender;
+        }
 
-        // userInfoRepository.save(userInfo);
+        userInfoRepository.save(userInfo);
 
-        // return Response.make(Utils.nextToken(req.token), userInfo);
-        return null;
+        return Response.make(Utils.nextToken(req.token), userInfo);
     }
 
     @PostMapping("/get-history")
