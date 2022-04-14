@@ -33,6 +33,8 @@ public class Journey extends Validatable {
     journey.id = Utils.makeUUID();
 
     journey.createdTime = Utils.timestamp();
+    journey.status = JourneyStatus.Waiting;
+    journey.endTime = -1;
 
     from.addLatitude(rand.nextDouble(0, 100));
     from.addLogitude(rand.nextDouble(0, 100));

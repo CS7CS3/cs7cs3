@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 public class GetJourneyByLocationResponse extends Validatable {
   public static GetJourneyByLocationResponse make(List<Journey> journeys) {
-    return null;
+    return new GetJourneyByLocationResponse(journeys);
   }
 
   private GetJourneyByLocationResponse(List<Journey> journeys) {
